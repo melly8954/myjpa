@@ -16,7 +16,7 @@ public class PhoneBookRequest implements IPhoneBook{
     @Size(min = 2, max = 12)
     private String name;
 
-    @Size(min = 4, max = 8)
+    @NotBlank
     private ECategory category;
 
     @Size(min = 10, max = 20)
