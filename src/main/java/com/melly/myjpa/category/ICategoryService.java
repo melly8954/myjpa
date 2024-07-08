@@ -2,12 +2,12 @@ package com.melly.myjpa.category;
 
 import java.util.List;
 
-public interface ICategoryService<ICategory> {
-    ICategory findById(Long id);
-    ICategory findByName(String name);
-    List<ICategory> getAllList();
-    ICategory insert(ICategory category) throws Exception;
+public interface ICategoryService<T> {
+    T findById(Long id);
+    T findByName(String name);
+    List<T> getAllList();
+    T insert(T category) throws Exception;
     boolean remove(Long id) throws Exception;
-    ICategory update(Long id, ICategory category) throws Exception;
-    List<ICategory> findAllByNameContains(String name);
+    T update(Long id, T category) throws Exception;
+    List<T> findAllByNameContains(String name);
 }
