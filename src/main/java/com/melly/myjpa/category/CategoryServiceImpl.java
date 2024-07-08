@@ -19,13 +19,7 @@ public class CategoryServiceImpl implements ICategoryService<ICategory>{
         if(dto == null){
             return false;
         }
-        else if(dto.getName() == null || dto.getName().isEmpty() ){
-            return false;
-        }
-        else if(dto.getName() == null){
-            return false;
-        }
-        return true;
+        else return dto.getName() != null && !dto.getName().isEmpty();
     }
 
     @Override
@@ -35,17 +29,9 @@ public class CategoryServiceImpl implements ICategoryService<ICategory>{
     }
 
     @Override
-    public List<ICategory> findByName(String name) {
-        if (name == null || name.isEmpty()) {
-            return  new ArrayList<>();
-        }
-        List<CategoryEntity> list = this.categoryJpaRepository.findAllByName(name);
-        List<ICategory> result = new ArrayList<>();
-        for( CategoryEntity item : list ){
-            result.add((ICategory)item);
-        }
-        return  result;
-
+    public ICategory findByName(String name) {
+        Optional<CategoryEntity> entity = this.categoryJpaRepository.findByName(name);
+        return entity.orElse(null);
     }
 
 
@@ -107,7 +93,7 @@ public class CategoryServiceImpl implements ICategoryService<ICategory>{
     @Override
     public List<ICategory> findAllByNameContains(String name) {
         if (name == null || name.isEmpty()) {
-            return new ArrayList<>();
+            return new ArrayList<>();       // 빈 객체
         }
         List<CategoryEntity> list = this.categoryJpaRepository.findAllByNameContains(name);
         List<ICategory> result = new ArrayList<>();

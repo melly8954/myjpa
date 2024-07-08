@@ -21,7 +21,7 @@ public class CategoryController {
     private ICategoryService<ICategory> categoryService;
 
     @PostMapping("")
-    public ResponseEntity<ICategory> insertPB(@RequestBody CategoryDto dto){
+    public ResponseEntity<ICategory> insertCG(@RequestBody CategoryDto dto){
         try{
             if( dto == null ){
                 return ResponseEntity.badRequest().build();
@@ -103,13 +103,13 @@ public class CategoryController {
     }
 
     @GetMapping("/findByName/{name}")
-    public ResponseEntity<List<ICategory>> findByName(@PathVariable String name){
+    public ResponseEntity<ICategory> findByName(@PathVariable String name){
         try{
             if( name == null || name.isEmpty() ){
                 return ResponseEntity.badRequest().build();
             }
-            List<ICategory> result = this.categoryService.findByName(name);
-            if ( result == null || result.size() <= 0 ){
+            ICategory result = this.categoryService.findByName(name);
+            if ( result == null ){
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok(result);

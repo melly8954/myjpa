@@ -17,13 +17,7 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
         if(dto == null){
             return false;
         }
-        else if(dto.getName() == null || dto.getName().isEmpty() ){
-            return false;
-        }
-        else if(dto.getCategory() == null){
-            return false;
-        }
-        return true;
+        else return dto.getName() != null && !dto.getName().isEmpty();
     }
 
     @Override
