@@ -1,9 +1,8 @@
-package com.melly.myjpa;
+package com.melly.myjpa.phonebook;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Getter
 @Setter

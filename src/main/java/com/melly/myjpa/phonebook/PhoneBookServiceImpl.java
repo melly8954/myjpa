@@ -1,6 +1,5 @@
-package com.melly.myjpa;
+package com.melly.myjpa.phonebook;
 
-import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

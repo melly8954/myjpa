@@ -1,4 +1,4 @@
-package com.melly.myjpa;
+package com.melly.myjpa.phonebook;
 
 import lombok.*;
 
