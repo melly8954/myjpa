@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements ICategoryService<ICategory>{
         if ( !this.isValidInsert(category)){
             return null;
         }
-        CategoryEntity entity = new CategoryEntity();
+        CategoryEntity entity = CategoryEntity.builder().id(0L).name(category.getName()).build();
         entity.copyFields(category);
         ICategory result = this.categoryJpaRepository.saveAndFlush(entity);
         return result;
