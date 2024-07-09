@@ -1,5 +1,7 @@
 package com.melly.myjpa.phonebook;
 
+import com.melly.myjpa.category.CategoryEntity;
+import com.melly.myjpa.category.ICategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,16 +38,6 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
         }
 
         return list;
-    }
-
-
-    @Override
-    public IPhoneBook insert(String name, ECategory category, String phoneNumber, String email) throws Exception {
-        PhoneBookDto phoneBook = PhoneBookDto.builder()
-                .id(0L)
-                .name(name).category(category)
-                .phoneNumber(phoneNumber).email(email).build();
-        return this.insert(phoneBook);
     }
 
     @Override
@@ -95,7 +87,7 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
             return null;
         }
         PhoneBookEntity entity = PhoneBookEntity.builder()
-                .id(id).name(find.getName()).category(find.getCategory()).phoneNumber(find.getPhoneNumber())
+                .id(id).name(find.getName()).category((CategoryEntity) find.getCategory()).phoneNumber(find.getPhoneNumber())
                 .email(find.getEmail())
                 .build();
         entity.copyFields(phoneBook);
@@ -117,11 +109,11 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
     }
 
     @Override
-    public List<IPhoneBook> getListFromCategory(ECategory category) {
+    public List<IPhoneBook> getListFromCategory(ICategory category) {
         if (category == null) {
             return new ArrayList<>();
         }
-        List<PhoneBookEntity> list = this.phoneBookjpaRepository.findAllByCategory(category);
+        List<PhoneBookEntity> list = this.phoneBookjpaRepository.findAllByCategory( (CategoryEntity)category );
         List<IPhoneBook> result = list.stream()
                 .map(item -> (IPhoneBook)item)
                 .toList();

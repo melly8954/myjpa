@@ -1,5 +1,7 @@
 package com.melly.myjpa.phonebook;
 
+import com.melly.myjpa.category.ICategory;
+
 import java.io.Serializable;
 
 public interface IPhoneBook extends Serializable {
@@ -9,8 +11,8 @@ public interface IPhoneBook extends Serializable {
     String getName();
     void setName(String name);
 
-    ECategory getCategory();
-    void setCategory(ECategory category);
+    ICategory getCategory();
+    void setCategory(ICategory category);
 
     String getPhoneNumber();
     void setPhoneNumber(String phoneNumber);
