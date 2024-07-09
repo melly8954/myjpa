@@ -61,25 +61,7 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
         return false;
     }
 
-    private boolean setIphoneBookIsNotNull(IPhoneBook to, IPhoneBook from) {
-        if ( to == null || from == null ) {
-            return false;
-        }
-        if ( from.getName() != null && !from.getName().isEmpty() ) {
-            to.setName(from.getName());
-        }
-        if ( from.getCategory() != null ) {
-            to.setCategory(from.getCategory());
-        }
-        if ( from.getPhoneNumber() != null && !from.getPhoneNumber().isEmpty() ) {
-            to.setPhoneNumber(from.getPhoneNumber());
-        }
-        if ( from.getEmail() != null && !from.getEmail().isEmpty() ) {
-            to.setEmail(from.getEmail());
-        }
-        return true;
-    }
-
+    
     @Override
     public IPhoneBook update(Long id, IPhoneBook phoneBook) {
         IPhoneBook find = this.findById(id);
