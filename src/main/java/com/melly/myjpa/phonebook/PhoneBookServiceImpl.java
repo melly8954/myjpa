@@ -34,7 +34,7 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
     public List<IPhoneBook> getAllList() {
         List<IPhoneBook> list = new ArrayList<>();
         for ( PhoneBookEntity entity : this.phoneBookjpaRepository.findAll() ){
-            list.add( (IPhoneBook)entity );
+            list.add(entity);
         }
 
         return list;
@@ -61,7 +61,7 @@ public class PhoneBookServiceImpl implements IPhoneBookService<IPhoneBook> {
         return false;
     }
 
-    
+
     @Override
     public IPhoneBook update(Long id, IPhoneBook phoneBook) {
         IPhoneBook find = this.findById(id);
