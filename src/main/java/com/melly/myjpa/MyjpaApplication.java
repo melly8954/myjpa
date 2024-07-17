@@ -11,3 +11,8 @@ public class MyjpaApplication {
 	}
 
 }
+
+
+
+
+
