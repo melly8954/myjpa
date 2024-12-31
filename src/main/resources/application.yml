@@ -25,6 +25,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none  # 테이블 자동 생성 여부
+      naming:   # 필드 언더바 자동변경 방지
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true  # SQL 쿼리 출력 여부
     properties:
       hibernate:
@@ -33,6 +36,7 @@ spring:
     datasource:
       hikari:
         maximum-pool-size: 10  # 커넥션 풀 크기, 기본 커넥션 풀 크기
+
     logging:
       level:
         org.hibernate.SQL: debug  # Hibernate SQL 로그 활성화, debug 레벨로 설정하면 SQL 쿼리 로그가 콘솔에 출력
