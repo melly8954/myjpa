@@ -1,0 +1,46 @@
+server:
+  port: 8089
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: myjpa
+
+  # mysql datetime ? return datetime
+  jackson:
+    deserialization:
+      adjust-dates-to-context-time-zone: false
+    time-zone: Asia/Seoul
+
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/webStudy_db?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: psw_web
+    password: web123123!
+
+  jpa:
+    hibernate:
+      ddl-auto: none  # 테이블 자동 생성 여부
+    show-sql: true  # SQL 쿼리 출력 여부
+    properties:
+      hibernate:
+        format_sql: true  # SQL 포맷팅 여부, Hibernate가 출력하는 SQL을 사람이 읽기 쉬운 형태로 포맷팅.
+                          # 기본적으로 한 줄로 출력되는 SQL 쿼리가 포맷팅되어 출력되므로, 로그에서 SQL을 더 쉽게 이해할 수 있음
+    datasource:
+      hikari:
+        maximum-pool-size: 10  # 커넥션 풀 크기, 기본 커넥션 풀 크기
+    logging:
+      level:
+        org.hibernate.SQL: debug  # Hibernate SQL 로그 활성화, debug 레벨로 설정하면 SQL 쿼리 로그가 콘솔에 출력
+        org.hibernate.type.descriptor.sql.BasicBinder: trace  # SQL 파라미터가 실제 쿼리에 바인딩되는 과정의 로그를 출력, trace 레벨로 설정하면 SQL 파라미터가 어떻게 바인딩되는지 로그로 확인할 수 있음
+
+  # mustache
+  mustache:
+    enabled: true
+    charset: UTF-8
+    suffix: .html  # "suffix"에 콜론이 빠져있는 부분 수정
+    check-template-location: true

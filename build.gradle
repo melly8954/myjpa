@@ -24,18 +24,33 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'	// JPA 기본 의존성
+	implementation 'mysql:mysql-connector-java'  // MySQL 드라이버 (데이터베이스에 맞는 드라이버 사용)
+
 
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	implementation 'org.apache.httpcomponents.client5:httpclient5'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-mustache'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'org.springframework.boot:spring-boot-starter-logging'  // 로깅 의존성
+
+	// log4jdbc
+	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+
+	testImplementation 'org.springframework.security:spring-security-test'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
