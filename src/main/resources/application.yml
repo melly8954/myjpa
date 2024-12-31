@@ -18,9 +18,9 @@ spring:
 
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/webStudy_db?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: psw_web
-    password: web123123!
+    url: jdbc:log4jdbc:mysql://localhost:3306/myJPA_db?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: psw_jpa
+    password: jpa123123!
 
   jpa:
     hibernate:

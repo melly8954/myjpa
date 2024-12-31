@@ -1,0 +1,12 @@
+
+### Mysql Create Database & User 명령어
+```
+create database myJPA_db character set utf8mb4 collate utf8mb4_general_ci;
+create user 'psw_jpa'@'%' identified by 'jpa123123!';
+grant all privileges on myJPA_db.* to 'psw_jpa'@'%' with grant option;
+flush privileges;
+
+```
+
+
+
