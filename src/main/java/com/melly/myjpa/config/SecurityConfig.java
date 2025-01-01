@@ -22,7 +22,14 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()); // 모든 사용자가 접근할 수 있도록 허용
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().permitAll()) // 모든 사용자가 접근할 수 있도록 허용
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("loginId")   // Spring Security 의 formLogin() 설정에서 기본적으로 username 파라미터 이름을 사용하므로 변경
+                        .loginProcessingUrl("/api/auth/login")
+                        .defaultSuccessUrl("/")
+                        .permitAll());
 
         return http.build();
 
