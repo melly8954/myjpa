@@ -53,27 +53,28 @@ public class UserRestController implements IResponseController {
         }
     }
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginRequestDto loginRequestDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
-            StringBuilder errorMessages = new StringBuilder();
-            bindingResult.getAllErrors().forEach(error -> {
-                errorMessages.append(error.getDefaultMessage()).append(" / ");
-            });
-            return makeResponseEntity(HttpStatus.BAD_REQUEST, "로그인 실패" + errorMessages.toString(), null);
-        }
-        try{
-            Boolean login = this.userService.login(loginRequestDto);
-            if(login){
-                return makeResponseEntity(HttpStatus.OK,"로그인 성공",login);
-            }else{
-                return makeResponseEntity(HttpStatus.BAD_REQUEST,"로그인 실패",null);
-            }
-        }catch(Exception e) {
-            log.error(e.getMessage());
-            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"로그인 실패" + e.getMessage(),null);
-        }
-    }
+//    // Spring Security 덕분에 구현할 필요가 없음
+//    @PostMapping("/auth/login")
+//    public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginRequestDto loginRequestDto, BindingResult bindingResult) {
+//        if(bindingResult.hasErrors()) {
+//            StringBuilder errorMessages = new StringBuilder();
+//            bindingResult.getAllErrors().forEach(error -> {
+//                errorMessages.append(error.getDefaultMessage()).append(" / ");
+//            });
+//            return makeResponseEntity(HttpStatus.BAD_REQUEST, "로그인 실패" + errorMessages.toString(), null);
+//        }
+//        try{
+//            Boolean login = this.userService.login(loginRequestDto);
+//            if(login){
+//                return makeResponseEntity(HttpStatus.OK,"로그인 성공",login);
+//            }else{
+//                return makeResponseEntity(HttpStatus.BAD_REQUEST,"로그인 실패",null);
+//            }
+//        }catch(Exception e) {
+//            log.error(e.getMessage());
+//            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"로그인 실패" + e.getMessage(),null);
+//        }
+//    }
 
     @GetMapping("/users/login-id")
     public ResponseEntity<ResponseDto> findLoginIdByEmail(@RequestParam String email) {
