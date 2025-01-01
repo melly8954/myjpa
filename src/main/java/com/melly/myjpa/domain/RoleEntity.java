@@ -21,4 +21,7 @@ public class RoleEntity {
     @Column(unique = true, nullable = false)
     private String role;
 
+    public String getRoleName() {
+        return role;
+    }
 }
