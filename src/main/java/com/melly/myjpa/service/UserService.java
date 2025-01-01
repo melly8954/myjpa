@@ -1,8 +1,10 @@
 package com.melly.myjpa.service;
 
+import com.melly.myjpa.domain.RoleEntity;
 import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
+import com.melly.myjpa.repository.RoleRepository;
 import com.melly.myjpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserEntity registerUser(UserDto userDto) {
@@ -39,6 +42,10 @@ public class UserService {
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
+        // 기본 'USER' 역할 할당 (관리자 등 역할은 추후 확장 가능)
+        RoleEntity userRole = roleRepository.findByRole("USER")
+                .orElseThrow(() -> new IllegalArgumentException("기본 역할이 존재하지 않습니다."));
+
         // UserEntity 객체 생성 및 저장 (빌더 패턴 사용)
         UserEntity user = UserEntity.builder()
                 .loginId(userDto.getLoginId())
@@ -46,6 +53,7 @@ public class UserService {
                 .name(userDto.getName())
                 .nickname(userDto.getNickname())
                 .email(userDto.getEmail())
+                .role(userRole)  // 기본 역할 할당
                 .build();
 
         return userRepository.save(user);  // 저장 후 반환
