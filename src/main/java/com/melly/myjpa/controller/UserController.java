@@ -106,7 +106,7 @@ public class UserController implements IResponseController {
 
     // 모든 사용자 조회
     // 컨트롤러에서 페이지 번호와 크기를 받아서 처리
-    @GetMapping("/users/all")
+    @GetMapping("/admin/users")
     public ResponseEntity<ResponseDto> getAllUsers(@RequestParam int page, @RequestParam int size) {
         // 페이지 번호가 1 이상인지 확인
         if (page < 1) {
