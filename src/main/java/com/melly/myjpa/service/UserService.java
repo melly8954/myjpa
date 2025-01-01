@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +30,17 @@ public class UserService {
             // 서비스에서 예외를 던지는 방식은 비즈니스 로직에 문제가 생겼을 때 이를 명확하게 클라이언트에 전달하는 좋은 방법
             throw new IllegalArgumentException("이미 사용 중인 로그인 ID 입니다.");
         }
-        if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
-        }
         if (userRepository.existsByNickname(userDto.getNickname())){
             throw new IllegalArgumentException("이미 사용 중인 닉네임 입니다.");
         }
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
+        }
+        // 이메일 형식의 정규표현식을 검사해주는 부분
+        if(!userDto.getEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")){
+            throw new IllegalArgumentException("email 형식을 맞추셔야 합니다.");
+        }
+
         // 비밀번호와 비밀번호 확인 일치 여부 확인
         if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
             throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
