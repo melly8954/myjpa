@@ -76,8 +76,8 @@ public class UserRestController implements IResponseController {
 //        }
 //    }
 
-    @GetMapping("/users/login-id")
-    public ResponseEntity<ResponseDto> findLoginIdByEmail(@RequestParam String email) {
+    @GetMapping("/users/login-id/{email}")
+    public ResponseEntity<ResponseDto> findLoginIdByEmail(@PathVariable String email) {
         // 이메일이 null 이거나 비어 있는 경우 처리
         if(email == null || email.isEmpty()){
             return makeResponseEntity(HttpStatus.BAD_REQUEST,"email 은 필수 입력 항목입니다.",null);
