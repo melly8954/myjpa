@@ -7,6 +7,9 @@ CREATE TABLE role_tbl (
     role VARCHAR(255) UNIQUE NOT NULL
 );
 
+INSERT INTO role_tbl (role) VALUES ('ADMIN');
+INSERT INTO role_tbl (role) VALUES ('USER');
+
 ```
 
 
