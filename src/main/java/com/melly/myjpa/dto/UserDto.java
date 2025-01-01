@@ -23,6 +23,10 @@ public class UserDto {
     @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이 입니다.")
     private String password;
 
+    @NotBlank(message = "비밀번호 확인 항목은 필수 입력 항목입니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이 입니다.")
+    private String confirmPassword;
+
     @NotBlank(message = "이름 항목은 필수 입력 항목입니다.")
     @Size(min = 2, max = 100, message = "이름은 2~100자 사이 입니다.")
     private String name;

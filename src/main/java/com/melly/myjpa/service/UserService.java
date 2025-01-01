@@ -1,6 +1,7 @@
 package com.melly.myjpa.service;
 
 import com.melly.myjpa.domain.UserEntity;
+import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
 import com.melly.myjpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +21,16 @@ public class UserService {
             // 서비스에서 예외를 던지는 방식은 비즈니스 로직에 문제가 생겼을 때 이를 명확하게 클라이언트에 전달하는 좋은 방법
             throw new IllegalArgumentException("이미 사용 중인 로그인 ID 입니다.");
         }
-
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
         }
-
         if (userRepository.existsByNickname(userDto.getNickname())){
             throw new IllegalArgumentException("이미 사용 중인 닉네임 입니다.");
         }
-
-
-
+        // 비밀번호와 비밀번호 확인 일치 여부 확인
+        if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
+            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        }
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
@@ -46,4 +46,8 @@ public class UserService {
         return userRepository.save(user);  // 저장 후 반환
     }
 
+    public UserEntity login(LoginRequestDto loginRequestDto){
+
+        return null;
+    }
 }
