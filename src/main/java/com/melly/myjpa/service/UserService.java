@@ -5,8 +5,13 @@ import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
 import com.melly.myjpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +85,8 @@ public class UserService {
 //                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
 //    }
 
-
+    // 모든 회원 정보 및 페이징 처리
+    public Page<UserEntity> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 }
