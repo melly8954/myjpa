@@ -21,5 +21,7 @@ public class UserEntity {
     private String nickname;
     private String email;
 
-
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private RoleEntity role;
 }
