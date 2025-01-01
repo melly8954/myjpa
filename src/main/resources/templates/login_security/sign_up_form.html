@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원가입 페이지</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<body>
+    <div>
+        <form action="/api/users/register" method="post">
+            <label for="loginId">로그인 ID 입력란</label><br>
+            <input type="text" id="loginId" name="loginId" placeholder="로그인 ID 입력"><br>
+            <label for="password">로그인 Password 입력란</label><br>
+            <input type="password" id="password" name="password" placeholder="로그인 Password 입력"><br>
+            <label for="confirmPassword">Password 재입력</label><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Password 재입력"><br>
+            <label for="name">회원자 이름 입력란</label><br>
+            <input type="text" id="name" name="name" placeholder="이름 입력"><br>
+            <label for="nickname">사용할 닉네임 입력란</label><br>
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력"><br>
+            <label for="email">이메일 입력란</label><br>
+            <input type="email" id="email" name="email" placeholder="email 입력"><br>
+
+            <button id="submit" type="submit">회원 가입</button><br>
+            <button id="reset_button" type="reset">초기화</button>
+        </form>
+    </div>
+</body>
+<script>
+    $("#submit").on("click", function (event) {
+        event.preventDefault(); // 기본 폼 전송 막기
+
+        const formData = {
+            loginId: $("#loginId").val(),
+            password: $("#password").val(),
+            confirmPassword: $("#confirmPassword").val(),
+            name: $("#name").val(),
+            nickname: $("#nickname").val(),
+            email: $("#email").val()
+        };
+
+        $.ajax({
+            url: "/api/users/register",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(formData)
+        }).done(function (data) {
+            // 요청 성공 시 실행
+            if (data.message === "회원 가입 성공!") {
+                alert("회원가입이 성공적으로 완료되었습니다!");
+                window.location.href = "/";
+            } else {
+                alert("회원가입 실패: " + data.message);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            // 요청 실패 시 실행
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+            alert("회원가입 중 오류가 발생했습니다.");
+        });
+    });
+</script>
+</html>
