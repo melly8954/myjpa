@@ -39,7 +39,8 @@ public class PrincipalDetails implements UserDetails {
         collet.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return user.getRole().getRoleName();
+                String role = user.getRole().getRoleName();
+                return "ROLE_" + role; // "ADMIN"을 "ROLE_ADMIN"으로 변환, Spring Security 는 기본적으로 역할 이름에 ROLE_ 접두사를 기대함
             }
         });
         return collet;
