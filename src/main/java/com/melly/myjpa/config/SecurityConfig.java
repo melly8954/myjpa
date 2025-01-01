@@ -4,6 +4,7 @@ import com.melly.myjpa.config.auth.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity  // Spring Security 필터가 Spring의 필터 체인에 등록되고, 애플리케이션의 보안 구성이 가능해진다. / Spring Security의 웹 보안을 활성화
+@EnableMethodSecurity(securedEnabled = true)   // @Secured 어노테이션 활성화 ( 구 EnableGlobalMethodSecurity )
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
