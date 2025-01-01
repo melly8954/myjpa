@@ -46,8 +46,39 @@ public class UserService {
         return userRepository.save(user);  // 저장 후 반환
     }
 
-    public UserEntity login(LoginRequestDto loginRequestDto){
+    public Boolean login(LoginRequestDto loginRequestDto){
+        // 입력된 ID로 사용자 조회
+        UserEntity user = userRepository.findByLoginId(loginRequestDto.getLoginId());
 
-        return null;
+        if (user == null) {
+            // ID에 해당하는 사용자가 없을 경우 false 반환
+            return false;
+        }
+        // 비밀번호 확인 (입력된 비밀번호와 저장된 암호화된 비밀번호 비교)
+        if(!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
+            return false;
+        }
+        return true;
     }
+
+    public String findLoginIdByEmail(String email) {
+        // 이메일에 해당하는 사용자를 조회
+        UserEntity user = this.userRepository.findByEmail(email);
+
+        // 사용자가 존재하지 않으면 예외를 던진다.
+        if (user == null) {
+            throw new IllegalStateException("해당 이메일로 등록된 사용자가 없습니다.");
+        }
+
+        // 사용자가 존재하면 로그인 ID 반환
+        String loginId = user.getLoginId();
+        return loginId;
+    }
+//    public String findLoginIdByEmail(String email) {
+//        return userRepository.findByEmail(email)
+//                .map(UserEntity::getLoginId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
+//    }
+
+
 }
