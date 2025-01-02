@@ -8,11 +8,18 @@
     <title>Home 화면</title>
 </head>
 <body>
-    <div>
-        <a href="/login">로그인 페이지</a><br>
-        <a href="/sign-up">회원가입 페이지</a><br>
-        <a href="/users/login-id">아이디 찾기 페이지</a><br>
-        <a href="/admin/users-form">모든 유저 조회 페이지</a><br>
-    </div>
+<div>
+    {{#login_user}}
+    <p>환영합니다, {{nickname}}님!</p>
+    <a href="/admin/users-form">모든 유저 조회 페이지</a><br>
+    <a href="/logout">로그아웃</a>
+    {{/login_user}}
+
+    {{^isAuthenticated}}
+    <a href="/login">로그인 페이지</a><br>
+    <a href="/sign-up">회원가입 페이지</a><br>
+    <a href="/users/login-id">아이디 찾기 페이지</a><br>
+    {{/isAuthenticated}}
+</div>
 </body>
 </html>

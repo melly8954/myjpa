@@ -18,6 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity  // Spring Security 필터가 Spring의 필터 체인에 등록되고, 애플리케이션의 보안 구성이 가능해진다. / Spring Security의 웹 보안을 활성화
 @EnableMethodSecurity(securedEnabled = true)   // @Secured 어노테이션 활성화 ( 구 EnableGlobalMethodSecurity )
 public class SecurityConfig {
+    // 이 값을 변경하면 화면 템플릿의 {{#loginUser}} 도 변경해야 함
+    public static final String LOGINUSER = "login_user";
+
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final PrincipalOauth2UserService principalOauth2UserService;
