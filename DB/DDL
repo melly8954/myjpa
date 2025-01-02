@@ -14,16 +14,24 @@ INSERT INTO role_tbl (role) VALUES ('USER');
 
 
 ```
--- user_tbl 테이블 생성 (role_id 추가)
-CREATE TABLE user_tbl (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    login_id VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    nickname VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    role_id BIGINT,
-    CONSTRAINT FK_role FOREIGN KEY (role_id) REFERENCES role_tbl(id)
-);
+-- user_tbl 테이블 생성
+CREATE TABLE `user_tbl` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `loginId` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `nickname` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `role_id` bigint DEFAULT NULL,
+  `provider` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `provider_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `loginId` (`loginId`),
+  UNIQUE KEY `nickname` (`nickname`),
+  UNIQUE KEY `email` (`email`),
+  KEY `FK_role` (`role_id`),
+  CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ```
