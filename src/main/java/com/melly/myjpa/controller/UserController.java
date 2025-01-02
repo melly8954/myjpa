@@ -13,12 +13,6 @@ import java.util.Map;
 
 @Controller
 public class UserController {
-
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-
     @GetMapping("/sign-up")
     public String signUpForm() {
         return "login_security/sign_up_form";
@@ -42,6 +36,7 @@ public class UserController {
 
 
 
+    // -------------------------------------------------
     // 다음은 Spring Security 를 사용하여 인증 정보를 얻는 과정
     @GetMapping("/check-session1")
     @ResponseBody
