@@ -48,3 +48,14 @@ spring:
     charset: UTF-8
     suffix: .html  # "suffix"에 콜론이 빠져있는 부분 수정
     check-template-location: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1092632552052-2h3rg3p2sf9d83drtpb4s7fss4c1op5s.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
