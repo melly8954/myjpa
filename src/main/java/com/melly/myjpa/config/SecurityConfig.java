@@ -1,6 +1,7 @@
 package com.melly.myjpa.config;
 
 import com.melly.myjpa.config.auth.CustomAuthenticationSuccessHandler;
+import com.melly.myjpa.config.oauth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final PrincipalOauth2UserService principalOauth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,8 +45,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")  // 로그아웃 후 리다이렉트 URL
                         .invalidateHttpSession(true)  // 세션 무효화
                         .clearAuthentication(true)  // 인증 정보 지우기
-                        .permitAll());  // 로그아웃 URL은 모두 허용
-
+                        .permitAll())  // 로그아웃 URL은 모두 허용
+                .oauth2Login(oauth  -> oauth
+                        .loginPage("/login")  // 구글 로그인이 완료된 뒤 후처리가 필요함
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(principalOauth2UserService)
+                        ));
 
         return http.build();
 
