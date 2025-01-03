@@ -9,6 +9,17 @@ server:
 spring:
   application:
     name: myjpa
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: rkwhr8963@gmail.com
+    password: ifqi gtmx xppi ldto
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
 
   # mysql datetime ? return datetime
   jackson:
