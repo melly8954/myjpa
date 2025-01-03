@@ -103,4 +103,9 @@ public class UserService {
     public Page<UserEntity> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
+    // 이메일 중복 여부 확인
+    public boolean isEmailExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
