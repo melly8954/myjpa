@@ -142,8 +142,8 @@ function validateNickname() {
     let nickname = $('#nickname').val();
 
     // 닉네임 최소 길이 및 최대 길이 체크
-    if (nickname.length < 5 || nickname.length > 30) {
-        displayValidationMessage('#nickname', '닉네임은 5~30자 사이여야 합니다.', 'error');
+    if (nickname.length < 2 || nickname.length > 30) {
+        displayValidationMessage('#nickname', '닉네임은 2~30자 사이여야 합니다.', 'error');
         return false;
     }
 

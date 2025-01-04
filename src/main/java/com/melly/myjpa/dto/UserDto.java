@@ -32,7 +32,7 @@ public class UserDto {
     private String name;
 
     @NotBlank(message = "닉네임 항목은 필수 입력 항목입니다.")
-    @Size(min = 5, max = 30, message = "닉네임은 5~30자 사이 입니다.")
+    @Size(min = 2, max = 30, message = "닉네임은 2~30자 사이 입니다.")
     private String nickname;
 
     @NotBlank(message = "email 항목은 필수 입력 항목입니다.")
