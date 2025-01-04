@@ -1,6 +1,7 @@
 package com.melly.myjpa.controller;
 
 import com.melly.myjpa.common.IResponseController;
+import com.melly.myjpa.common.MailRequest;
 import com.melly.myjpa.dto.UserPageResponseDto;
 import com.melly.myjpa.common.ResponseDto;
 import com.melly.myjpa.domain.UserEntity;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+
+import java.util.Map;
 
 
 @Slf4j
@@ -128,5 +131,26 @@ public class UserRestController implements IResponseController {
             log.error("서버 오류: ", e);
             return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.", null);
         }
+    }
+
+    // 로그인 ID 중복 체크 API
+    @PostMapping("/users/check-loginId")
+    public ResponseEntity<Boolean> checkLoginId(@RequestBody UserDto userDto) {
+        boolean isLoginIdExist = userService.isLoginIdExist(userDto.getLoginId());
+        return ResponseEntity.ok(isLoginIdExist);
+    }
+
+    // 닉네임 중복 체크 API
+    @PostMapping("/users/check-nickname")
+    public ResponseEntity<Boolean> checkNickname(@RequestBody UserDto userDto) {
+        boolean isNicknameExist = userService.isNicknameExist(userDto.getNickname());
+        return ResponseEntity.ok(isNicknameExist);
+    }
+
+    // 이메일 중복 체크 API
+    @PostMapping("/users/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestBody MailRequest emailRequest) {
+        boolean isEmailExist = userService.isEmailExist(emailRequest.getMail());
+        return ResponseEntity.ok(isEmailExist);
     }
 }

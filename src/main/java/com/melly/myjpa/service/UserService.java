@@ -104,6 +104,16 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    // 로그인ID 중복 여부 확인
+    public boolean isLoginIdExist(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
+
+    // 이메일 중복 여부 확인
+    public boolean isNicknameExist(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
     // 이메일 중복 여부 확인
     public boolean isEmailExist(String email) {
         return userRepository.existsByEmail(email);

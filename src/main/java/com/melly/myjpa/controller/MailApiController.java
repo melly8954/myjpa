@@ -20,15 +20,6 @@ public class MailApiController {
     private final MailService mailService;
     private final UserService userService;
 
-    // 이메일 중복 체크 API
-    @PostMapping("/api/users/check-email")
-    public ResponseEntity<Boolean> checkEmail(@RequestBody MailRequest emailRequest) {
-        boolean isEmailExist = userService.isEmailExist(emailRequest.getMail());
-        return ResponseEntity.ok(isEmailExist);
-    }
-
-
-
     /**
      * 인증번호 발송 메소드
      */
