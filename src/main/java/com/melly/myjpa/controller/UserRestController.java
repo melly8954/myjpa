@@ -56,7 +56,7 @@ public class UserRestController implements IResponseController {
         }
     }
 
-//    // Spring Security 덕분에 구현할 필요가 없음
+//    // Spring Security 덕분에 구현할 필요가 없음 --> .loginProcessingUrl("/api/auth/login") 이걸로 요청을 가로챔
 //    @PostMapping("/auth/login")
 //    public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginRequestDto loginRequestDto, BindingResult bindingResult) {
 //        if(bindingResult.hasErrors()) {
