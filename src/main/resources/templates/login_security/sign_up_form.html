@@ -12,36 +12,40 @@
 <body>
     <div>
         <form action="/api/users/register" method="post">
-            <label for="loginId">로그인 ID 입력란</label><br>
-            <input type="text" id="loginId" name="loginId" placeholder="로그인 ID 입력"><br>
+            <label for="loginId">로그인 ID</label><br>
+            <input type="text" id="loginId" name="loginId" placeholder="로그인 ID 입력">
+            <button type="button" id="check-loginId-button">중복 확인</button>
+            <span id="loginIdCheckMessage" class="validation-message error"></span><br><br>
 
-            <label for="password">로그인 Password 입력란</label><br>
-            <input type="password" id="password" name="password" placeholder="로그인 Password 입력"><br>
+            <label for="password">비밀번호</label><br>
+            <input type="password" id="password" name="password" placeholder="비밀번호 입력"><br><br>
 
-            <label for="confirmPassword">Password 재입력</label><br>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Password 재입력"><br>
+            <label for="confirmPassword">비밀번호 확인</label><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 재입력"><br><br>
 
-            <label for="name">회원자 이름 입력란</label><br>
-            <input type="text" id="name" name="name" placeholder="이름 입력"><br>
+            <label for="name">이름</label><br>
+            <input type="text" id="name" name="name" placeholder="이름 입력">
+            <span id="nameValidationMessage" class="validation-message"></span><br><br>
 
-            <label for="nickname">사용할 닉네임 입력란</label><br>
-            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력"><br>
+            <label for="nickname">닉네임</label><br>
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력">
+            <button type="button" id="check-nickname-button">중복 확인</button>
+            <span id="nicknameCheckMessage" class="validation-message error"></span><br><br>
 
-            <label for="email">이메일 입력란</label><br>
-            <input type="email" id="email" name="email" placeholder="email 입력"><br>
-            <button type="button" id="check-email-button" class="light-button">중복확인</button>
-            <span id="emailCheckMessage" class="error"></span>
-
-            <button type="button" id="send-code-button" class="light-button">인증 코드 발송</button>
+            <label for="email">email</label><br>
+            <input type="email" id="email" name="email" placeholder="email 입력">
+            <button type="button" id="check-email-button">중복 확인</button>
+            <span id="emailCheckMessage" class="validation-message error"></span><br>
+            <button type="button" id="send-code-button">인증 코드 발송</button><br><br>
 
             <div id="verifyCodeSection">
-                <label for="verificationCode">인증 코드</label>
-                <input type="text" id="verificationCode" name="verificationCode" placeholder="인증번호 입력" required/>
-                <button type="button" id="verify-code-button" class="light-button">이메일 인증</button>
-                <span id="verificationMessage" class="error"></span>
-            </div>
+                <label for="verificationCode">인증 코드</label><br>
+                <input type="text" id="verificationCode" name="verificationCode" placeholder="인증번호 입력">
+                <button type="button" id="verify-code-button">인증 확인</button>
+                <span id="verificationMessage" class="validation-message"></span>
+            </div><br>
 
-            <button id="submit" type="submit">회원 가입</button><br>
+            <button id="submit" type="submit">회원가입</button>
             <button id="reset_button" type="reset">초기화</button>
         </form>
     </div>
