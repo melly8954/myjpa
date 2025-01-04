@@ -1,5 +1,6 @@
 package com.melly.myjpa.config;
 
+import com.melly.myjpa.config.auth.CustomAuthenticationFailureHandler;
 import com.melly.myjpa.config.auth.CustomAuthenticationSuccessHandler;
 import com.melly.myjpa.config.oauth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final PrincipalOauth2UserService principalOauth2UserService;
 
     @Bean
@@ -42,6 +44,7 @@ public class SecurityConfig {
                         .usernameParameter("loginId")   // Spring Security 의 formLogin() 설정에서 기본적으로 username 파라미터 이름을 사용하므로 변경
                         .loginProcessingUrl("/api/auth/login")
                         .successHandler(customAuthenticationSuccessHandler)  // 로그인 성공 후 핸들러 설정
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")  // 로그아웃 URL
