@@ -38,6 +38,11 @@
             <span id="emailCheckMessage" class="validation-message error"></span><br>
             <button type="button" id="send-code-button">인증 코드 발송</button><br><br>
 
+            <!-- 로딩 스피너 추가 -->
+            <div id="loading-spinner" style="display:none;">
+                <img src="/css/user/loading-waiting.gif" alt="Loading..."> <!-- spinner.gif 파일을 로딩 스피너로 사용 -->
+            </div>
+
             <div id="verifyCodeSection">
                 <label for="verificationCode">인증 코드</label><br>
                 <input type="text" id="verificationCode" name="verificationCode" placeholder="인증번호 입력">
