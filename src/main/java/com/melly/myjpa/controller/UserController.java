@@ -15,7 +15,7 @@ import java.util.Map;
 public class UserController {
     @GetMapping("/sign-up")
     public String signUpForm() {
-        return "login_security/sign_up_form";
+        return "signup_form";
     }
 
     @GetMapping("/login")
