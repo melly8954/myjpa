@@ -2,6 +2,11 @@
 $("#submit").on("click", function (event) {
     event.preventDefault(); // 기본 폼 전송 막기
 
+    // 이메일 인증이 완료되었는지 체크
+    if (!validateEmailVerification()) {
+        return; // 이메일 인증이 안된 경우 회원가입 진행 안 함
+    }
+
     // 각 유효성 검사 함수 호출
     if( !validateLoginId() ||
         !validatePassword() ||
@@ -171,7 +176,7 @@ function validateNickname() {
 // 이메일 중복 유효성 검사
 function validateEmailDuplicate() {
     if ($('#emailCheckMessage').hasClass('error')) {
-        displayValidationMessage('#email', 'email 인증이 필요합니다.', 'error');
+        displayValidationMessage('#email', ' 이미 사용되고 있는 email 입니다.', 'error');
         return false;
     } else {
         displayValidationMessage('#email', '사용 가능한 email 입니다.', 'success');
@@ -252,8 +257,11 @@ $('#send-code-button').on('click', function() {
 
 // 이메일 인증 상태 체크
 function validateEmailVerification() {
-    if (!$('#verificationMessage').hasClass('success')) {
-        alert('email 인증을 완료해주세요.');
+    const verificationCode = $('#verificationCode').val();
+
+    // 인증 코드가 입력되지 않았으면 이메일 인증이 완료되지 않았다고 판단
+    if (!verificationCode || !$('#verificationMessage').hasClass('success')) {
+        alert('이메일 인증을 완료해주세요.');
         return false;
     }
     return true;
@@ -301,3 +309,5 @@ function displayValidationMessage(inputId, message, status) {
     $(inputId).next('.validation-message').remove();
     $(inputId).after(span);
 }
+
+
