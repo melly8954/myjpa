@@ -38,6 +38,13 @@ dependencies {
 	// email smtp
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// Jsoup 라이브러리 (HTML 파싱용)
+	implementation("org.jsoup:jsoup:1.15.4")
+
+	// Selenium 라이브러리 (웹 크롤링용)
+	implementation("org.seleniumhq.selenium:selenium-java:4.6.0")
+	implementation 'io.github.bonigarcia:webdrivermanager:5.2.0'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
