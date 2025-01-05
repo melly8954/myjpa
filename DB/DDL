@@ -34,3 +34,19 @@ CREATE TABLE `user_tbl` (
   CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
+
+
+
+
+
+
+-- 크롤링 테이블
+CREATE TABLE `bakery_tbl` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) COLLATE utf8mb4_general_ci NOT null,
+  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `open_hour` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tel` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
