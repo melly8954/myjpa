@@ -68,7 +68,7 @@ public class BakeryCrwalerService {
                 int maxPage = 25; // 최대 페이지 수 (필요에 맞게 설정)
 
                 while (currentPage < maxPage) {
-                    pageSelect(driver);
+                    pageSelect(driver,guName);
                     currentPage+=5;
                 }
             }
@@ -80,8 +80,7 @@ public class BakeryCrwalerService {
         }
     }
 
-    private void pageSelect(WebDriver driver) throws InterruptedException {
-        int currentPage;
+    private void pageSelect(WebDriver driver,String guName) throws InterruptedException {
         // 1~5 페이지 크롤링
         for (int i = 1; i <= 5; i++) {
             // 페이지 번호 클릭하여 해당 페이지로 이동
@@ -98,7 +97,7 @@ public class BakeryCrwalerService {
                 jsExecutor.executeScript("arguments[0].click();", pageLink);
 
                 Thread.sleep(2000); // 페이지 로딩 대기
-                extractBakeryData(driver); // 해당 페이지에서 데이터 추출
+                extractBakeryData(driver,guName); // 해당 페이지에서 데이터 추출
 
                 if(i == 5){
                     // 페이지 스크롤로 요소 보이게 함
@@ -119,7 +118,7 @@ public class BakeryCrwalerService {
     }
 
 
-    private void extractBakeryData(WebDriver driver) {
+    private void extractBakeryData(WebDriver driver, String guName) {
         List<WebElement> bakeryItems = driver.findElements(By.cssSelector(".PlaceItem"));
         System.out.println("현재 페이지 데이터 개수: " + bakeryItems.size());
 
@@ -141,7 +140,7 @@ public class BakeryCrwalerService {
                 }
 
                 System.out.printf("제과점 정보: %s / %s / %s / %s%n", bakeryName, bakeryAddress, bakeryTel, bakeryHours);
-                saveBakeryData(bakeryName, bakeryAddress, bakeryTel, bakeryHours);
+                saveBakeryData(bakeryName, bakeryAddress, bakeryTel, bakeryHours,guName);
 
             } catch (NoSuchElementException e) {
                 System.out.println("데이터 추출 중 오류 발생.");
@@ -149,7 +148,7 @@ public class BakeryCrwalerService {
         }
     }
 
-    private void saveBakeryData(String name, String address, String tel, String openHour) {
+    private void saveBakeryData(String name, String address, String tel, String openHour, String region) {
         // 중복 체크: 이름과 주소가 동일한 데이터가 있는지 확인
         if (bakeryRepository.existsByNameAndAddress(name, address)) {
             System.out.println("중복 데이터 스킵: " + name + ", " + address);
@@ -160,7 +159,8 @@ public class BakeryCrwalerService {
                 .name(name)
                 .address(address)
                 .tel(tel)
-                .openHour(openHour).build();
+                .openHour(openHour)
+                .region(region).build();
         try {
             bakeryRepository.save(bakery);
         } catch (Exception e) {

@@ -24,5 +24,6 @@ public class Bakery {
     private String tel;
     @Column(name="open_hour")
     private String openHour;
+    private String region;
 
 }
