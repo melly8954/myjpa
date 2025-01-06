@@ -8,7 +8,7 @@ body {
 }
 
 /* 페이지네이션 컨테이너 */
-#pageDiv {
+#page-div, #search-page-div {
     margin-top: 20px;
     display: flex;
     justify-content: center;
@@ -16,7 +16,7 @@ body {
     flex-wrap: wrap;
 }
 
-#pageDiv a {
+#page-div a, #search-page-div a {
     margin: 0 5px;
     padding: 8px 15px;
     background-color: #e9ecef;
@@ -29,13 +29,13 @@ body {
     display: inline-block;
 }
 
-#pageDiv a:hover {
+#page-div a:hover, #search-page-div a:hover {
     background-color: #6c757d;
     color: #fff;
     transform: translateY(-2px); /* 살짝 위로 올라가도록 */
 }
 
-#pageDiv a.active {
+#page-div a.active, #search-page-div a.active {
     background-color: #0d6efd;
     color: #fff;
     font-weight: bold;
@@ -44,28 +44,28 @@ body {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
-#pageDiv a.active:hover {
+#page-div a.active:hover, #search-page-div a.active:hover {
     background-color: #0d6efd;
     color: #fff;
     transform: none; /* active 상태에서는 hover 효과 방지 */
 }
 
-#pageDiv a.prev, #pageDiv a.next {
+#page-div a.prev, #page-div a.next, #search-page-div a.prev, #search-page-div a.next {
     background-color: #007bff;
     color: white;
     font-weight: bold;
 }
 
-#pageDiv a.prev:hover, #pageDiv a.next:hover {
+#page-div a.prev:hover, #page-div a.next:hover, #search-page-div a.prev:hover, #search-page-div a.next:hover {
     background-color: #0056b3;
 }
 
 /* 페이지네이션 버튼 그룹 */
-#pageDiv a.prev, #pageDiv a.next {
+#page-div a.prev, #page-div a.next, #search-page-div a.prev, #search-page-div a.next {
     margin: 0 20px;
     padding: 8px 20px;
 }
 
-#pageDiv a:focus {
+#page-div a:focus, #search-page-div a:focus {
     outline: none;
 }
