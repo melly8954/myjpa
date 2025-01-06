@@ -29,15 +29,8 @@ public class UserController {
         return "/login_security/find_loginId";
     }
 
-    @GetMapping("/admin-page")
-    public String findAdminPage() {
-        return "/admin/admin_page";
-    }
 
-    @GetMapping("/admin/users-form")
-    public String findAllUsersForm() {
-        return "/login_security/find_all_users";
-    }
+
 
 
 
