@@ -35,7 +35,7 @@ public class AdminInitializer implements CommandLineRunner {
         if (!userRepository.existsByLoginId("testidsuper")) {
             UserEntity admin = UserEntity.builder()
                     .loginId("testidsuper")
-                    .password(passwordEncoder.encode("super1q2w3e4r!"))  // 기본 관리자 비밀번호
+                    .password(passwordEncoder.encode("1q2w3e4r!"))  // 기본 관리자 비밀번호
                     .name("administrator")
                     .nickname("administrator")
                     .email("superemail@naver.com")
