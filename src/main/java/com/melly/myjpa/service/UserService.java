@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 
 @Service
@@ -65,6 +66,21 @@ public class UserService {
         return userRepository.save(user);  // 저장 후 반환
     }
 
+    // 로그인ID 중복 여부 확인
+    public boolean isLoginIdExist(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
+
+    // 이메일 중복 여부 확인
+    public boolean isNicknameExist(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+    // 이메일 중복 여부 확인
+    public boolean isEmailExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public Boolean login(LoginRequestDto loginRequestDto){
         // 입력된 ID로 사용자 조회
         UserEntity user = userRepository.findByLoginId(loginRequestDto.getLoginId());
@@ -80,6 +96,17 @@ public class UserService {
         return true;
     }
 
+    // 모든 회원 정보 및 페이징 처리
+    public Page<UserEntity> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    // name 으로 회원정보 찾기
+    public Page<UserEntity> getUserByName(String name,Pageable pageable) {
+        return userRepository.findByName(name,pageable);
+    }
+    
+    // 이메일로 로그인ID 찾기
     public String findLoginIdByEmail(String email) {
         // 이메일에 해당하는 사용자를 조회
         UserEntity user = this.userRepository.findByEmail(email);
@@ -99,23 +126,5 @@ public class UserService {
 //                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
 //    }
 
-    // 모든 회원 정보 및 페이징 처리
-    public Page<UserEntity> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
 
-    // 로그인ID 중복 여부 확인
-    public boolean isLoginIdExist(String loginId) {
-        return userRepository.existsByLoginId(loginId);
-    }
-
-    // 이메일 중복 여부 확인
-    public boolean isNicknameExist(String nickname) {
-        return userRepository.existsByNickname(nickname);
-    }
-
-    // 이메일 중복 여부 확인
-    public boolean isEmailExist(String email) {
-        return userRepository.existsByEmail(email);
-    }
 }
