@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/admin-page")
     public String findAdminPage() {
-        return "/xxx/x";
+        return "/admin/admin_page";
     }
 
     @GetMapping("/admin/users-form")
