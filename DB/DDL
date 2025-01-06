@@ -43,10 +43,10 @@ CREATE TABLE `user_tbl` (
 -- 크롤링 테이블
 CREATE TABLE `bakery_tbl` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `address` varchar(255) COLLATE utf8mb4_general_ci NOT null,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `open_hour` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tel` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `open_hour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `region` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
