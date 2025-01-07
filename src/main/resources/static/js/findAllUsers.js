@@ -11,6 +11,27 @@ $(document).ready(function() {
 
 });
 
+$.renderUserList = function(data) {
+    let html = "";
+    // 'users' 배열을 순회하며 HTML 생성
+    data.responseData.users.forEach(function(user) {
+        html += `
+            <div>
+                <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
+                <p>로그인 아이디: ${user.loginId}</p>
+                <p>이름: ${user.name}</p>
+                <p>닉네임: ${user.nickname}</p>
+                <p>이메일: ${user.email}</p>
+                <p>역할: ${user.role.roleName}</p>
+                <p>계정 상태 : ${user.deleteFlag}</p>
+                <p>계정 삭제 시간 : ${user.deleteDate}</p>
+                <hr>
+            </div>`;
+    });
+    $("#show-users").html(html);
+}
+
+
 $.loadUserList = function () {
     const page = 1;
 
@@ -28,26 +49,8 @@ $.loadUserList = function () {
         console.log("done:data=" + data + ", status=", status, ", xhr=", xhr);
         // 요청 성공 시 실행
         if (status === "success") {
-            let html = "";
-            // 'users' 배열을 순회하며 HTML 생성
-            data.responseData.users.forEach(function(user) {
-                html += `
-                    <div>
-                        <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
-                        <p>로그인 아이디: ${user.loginId}</p>
-                        <p>이름: ${user.name}</p>
-                        <p>닉네임: ${user.nickname}</p>
-                        <p>이메일: ${user.email}</p>
-                        <p>역할: ${user.role.roleName}</p>
-                        <p>계정 상태 : ${user.deleteFlag}</p>
-                        <p>계정 삭제 시간 : ${user.deleteDate}</p>
-                        <hr>
-                    </div>`;
-            });
-            // #show-users에 HTML 추가
-            $("#show-users").html(html);
-            // 페이지네이션 UI 생성
-            $.makePageUI(data.responseData.totalElements, page, "#page-div");
+            $.renderUserList(data);  // 사용자 목록 렌더링
+            $.makePageUI(data.responseData.totalElements, page, "#page-div");   // 페이지네이션 UI 생성
         } else {
             $("#show-users").html(`<p>오류: ${data.message}</p>`);
         }
@@ -113,24 +116,7 @@ $.searchBoardList = function(page, pageDivId, isSearch) {
         method: "GET",
     }).done(function(data,status,xhr) {
         if (status === "success") {
-            let html = "";
-            data.responseData.users.forEach(function(user) {
-                html += `
-                    <div>
-                        <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
-                        <p>로그인 아이디: ${user.loginId}</p>
-                        <p>이름: ${user.name}</p>
-                        <p>닉네임: ${user.nickname}</p>
-                        <p>이메일: ${user.email}</p>
-                        <p>역할: ${user.role.roleName}</p>                      
-                        <p>계정 상태 : ${user.deleteFlag}</p>
-                        <p>계정 삭제 시간 : ${user.deleteDate}</p>
-                        <hr>
-                    </div>
-                    `;
-            });
-            // 페이지네이션 UI를 갱신하고 데이터를 렌더링
-            $("#show-users").html(html);
+            $.renderUserList(data);  // 사용자 목록 렌더링
             $.makePageUI(data.responseData.totalElements, page, pageDivId, isSearch); // 페이지 UI 갱신
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -170,23 +156,7 @@ $.showUser = function () {
         method: "GET",
     }).done(function (data, status, xhr) {
         if (status === "success") {
-            let html = "";
-            // 'users' 배열을 순회하며 HTML 생성
-            data.responseData.users.forEach(function(user) {
-                html += `
-                    <div>
-                        <p>ID: ${user.id}</p>
-                        <p>로그인 아이디: ${user.loginId}</p>
-                        <p>이름: ${user.name}</p>
-                        <p>닉네임: ${user.nickname}</p>
-                        <p>이메일: ${user.email}</p>
-                        <p>역할: ${user.role.roleName}</p>
-                        <hr>
-                    </div>`;
-            });
-            // #show-users에 HTML 추가
-            $("#show-users").html(html);
-
+            $.renderUserList(data);  // 사용자 목록 렌더링
             // 페이지네이션 UI 생성, 검색 페이지네이션을 위한 isSearch 매개변수 추가
             $.makePageUI(data.responseData.totalElements, page, "#search-page-div", true);
         } else {
@@ -195,7 +165,6 @@ $.showUser = function () {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // 요청 실패 시 실행
         console.error("Request failed: " + textStatus + ", " + errorThrown);
-
         if (jqXHR.status === 404) {
             $("#show-users").html(`<p>검색하신 ${name} 라는 이름의 회원은 존재하지 않습니다.</p>`);
             $.makePageUI(0, 1,"#search-page-div");  // 404일 때 페이지네이션을 0으로 처리
@@ -216,9 +185,11 @@ function deleteUser(id) {
     }).done(function (data, status, xhr){
         if (status === "success") {
             console.log(data.responseData);
-            // 현재 페이지를 가져오기 위한 방법 추가
-            const currentPage = parseInt($("#page-div .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
-            $.searchBoardList(currentPage, "#page-div", false); // 삭제 후 현재 페이지로 목록 갱신
+            // 현재 페이지 번호 가져오기
+            const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
+            const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
+            const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
+            $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // 요청 실패 시 실행
