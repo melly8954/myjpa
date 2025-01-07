@@ -69,4 +69,18 @@ public class AdminRestController implements IResponseController {
             return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
         }
     }
+
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
+        try{
+            if(id == null || id<= 0) {
+                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야한다.",null);
+            }
+            this.userService.softDeleteUser(id);
+            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정 삭제 처리 완료",true);
+        }catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
+        }
+    }
 }

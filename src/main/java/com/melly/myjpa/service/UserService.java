@@ -6,6 +6,7 @@ import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
 import com.melly.myjpa.repository.RoleRepository;
 import com.melly.myjpa.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -13,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -61,6 +64,7 @@ public class UserService {
                 .nickname(userDto.getNickname())
                 .email(userDto.getEmail())
                 .role(userRole)  // 기본 역할 할당
+                .deleteFlag(false)
                 .build();
 
         return userRepository.save(user);  // 저장 후 반환
@@ -101,6 +105,11 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    // ID 로 사용자 찾기
+    public UserEntity getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
     // name 으로 회원정보 찾기
     public Page<UserEntity> getUserByName(String name,Pageable pageable) {
         return userRepository.findByName(name,pageable);
@@ -126,5 +135,18 @@ public class UserService {
 //                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
 //    }
 
+    // ID 로 사용자 계정 삭제
+    @Transactional
+    public void softDeleteUser(Long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
+        user.softDelete(); // 삭제 플래그 및 날짜 설정
+        userRepository.save(user); // 변경 사항 저장
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserEntity> getActiveUsers() {
+        return userRepository.findAllActiveUsers();
+    }
 }

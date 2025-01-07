@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -36,6 +38,19 @@ public class UserEntity {
     @Column(name="create_date")
     private Date createDate;
     // 엔티티가 영속화되기 전에 현재 시간을 자동으로 설정하는 메서드
+
+    @Column(name = "delete_flag", nullable = false)
+    private Boolean deleteFlag;
+    
+    // deleteFlag 설정
+    public void softDelete() {
+        this.deleteFlag = true;
+        this.deleteDate = LocalDateTime.now();
+    }
+
+    @Column(name="delete_date")
+    private LocalDateTime deleteDate;
+
     @PrePersist
     public void prePersist() {
         if (this.createDate == null) {

@@ -33,12 +33,14 @@ $.loadUserList = function () {
             data.responseData.users.forEach(function(user) {
                 html += `
                     <div>
-                        <p>ID: ${user.id}</p>
+                        <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
                         <p>로그인 아이디: ${user.loginId}</p>
                         <p>이름: ${user.name}</p>
                         <p>닉네임: ${user.nickname}</p>
                         <p>이메일: ${user.email}</p>
                         <p>역할: ${user.role.roleName}</p>
+                        <p>계정 상태 : ${user.deleteFlag}</p>
+                        <p>계정 삭제 시간 : ${user.deleteDate}</p>
                         <hr>
                     </div>`;
             });
@@ -115,12 +117,14 @@ $.searchBoardList = function(page, pageDivId, isSearch) {
             data.responseData.users.forEach(function(user) {
                 html += `
                     <div>
-                        <p>ID: ${user.id}</p>
+                        <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
                         <p>로그인 아이디: ${user.loginId}</p>
                         <p>이름: ${user.name}</p>
                         <p>닉네임: ${user.nickname}</p>
                         <p>이메일: ${user.email}</p>
-                        <p>역할: ${user.role.roleName}</p>
+                        <p>역할: ${user.role.roleName}</p>                      
+                        <p>계정 상태 : ${user.deleteFlag}</p>
+                        <p>계정 삭제 시간 : ${user.deleteDate}</p>
                         <hr>
                     </div>
                     `;
@@ -199,5 +203,25 @@ $.showUser = function () {
             $("#show-users").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
             $.makePageUI(0, 1,"#search-page-div");
         }
+    });
+}
+
+// 사용자 계정 삭제
+function deleteUser(id) {
+    alert(`${id}번 계정을 삭제 하시겠습니까?`);
+
+    $.ajax({
+        url: `/api/admin/${id}`,
+        type: 'DELETE',
+    }).done(function (data, status, xhr){
+        if (status === "success") {
+            console.log(data.responseData);
+            // 현재 페이지를 가져오기 위한 방법 추가
+            const currentPage = parseInt($("#page-div .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
+            $.searchBoardList(currentPage, "#page-div", false); // 삭제 후 현재 페이지로 목록 갱신
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        // 요청 실패 시 실행
+        console.error("Request failed: " + textStatus + ", " + errorThrown);
     });
 }
