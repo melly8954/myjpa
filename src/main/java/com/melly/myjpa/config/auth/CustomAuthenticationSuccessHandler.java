@@ -21,7 +21,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         // 인증된 사용자가 ADMIN 권한을 가지고 있으면 admin-page 로 리다이렉트
         if (authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
-            response.sendRedirect("/admin-page");  // 리다이렉트 처리
+            response.sendRedirect("/admin");  // 리다이렉트 처리
         } else {
             // ADMIN 권한이 없는 경우
             response.sendRedirect("/");  // 리다이렉트 처리
