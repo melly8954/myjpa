@@ -1,4 +1,3 @@
-
 ### Mysql Create Database & User 명령어
 ```
 -- role_tbl 테이블 생성
@@ -15,6 +14,7 @@ INSERT INTO role_tbl (role) VALUES ('USER');
 
 ```
 -- user_tbl 테이블 생성
+
 CREATE TABLE `user_tbl` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `loginId` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -26,16 +26,16 @@ CREATE TABLE `user_tbl` (
   `provider` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `provider_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `delete_flag` tinyint NOT NULL DEFAULT '0' COMMENT '회원 삭제 여부 (false: 활성, true: 삭제)',
+  `delete_date` timestamp NULL DEFAULT NULL COMMENT '회원 삭제 날짜',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nickname` (`nickname`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `loginId` (`loginId`),
   KEY `FK_role` (`role_id`),
   CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
-
-
 
 
 
