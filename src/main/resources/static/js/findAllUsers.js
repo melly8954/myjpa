@@ -16,6 +16,12 @@ $.renderUserList = function(data) {
     // 'users' 배열을 순회하며 HTML 생성
     data.responseData.users.forEach(function(user) {
         let accountStatus = user.deleteFlag ? "계정이 삭제된 상태입니다." : "계정을 정상적으로 사용 가능합니다.";
+
+        // 계정 삭제 취소 버튼을 deleteFlag가 true일 때만 보이게 처리
+        let undoButton = user.deleteFlag
+            ? `<button id="undo" onclick="undoDeleteUser(${user.id})">계정 삭제 취소</button>`
+            : '';
+
         html += `
             <div>
                 <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
@@ -24,7 +30,7 @@ $.renderUserList = function(data) {
                 <p>닉네임: ${user.nickname}</p>
                 <p>이메일: ${user.email}</p>
                 <p>역할: ${user.role.roleName}</p>
-                <p>계정 상태: ${accountStatus}</p>  <!-- 상태 메시지 추가 -->
+                <p>계정 상태: ${accountStatus} ${undoButton}</p> 
                 <p>계정 삭제 시간: ${user.deleteDate}</p>
                 <hr>
             </div>`;
@@ -178,22 +184,49 @@ $.showUser = function () {
 
 // 사용자 계정 삭제
 function deleteUser(id) {
-    alert(`${id}번 계정을 삭제 하시겠습니까?`);
+    if (confirm(`${id}번 계정을 삭제 하시겠습니까?`)) {
+        $.ajax({
+            url: `/api/admin/${id}`,
+            type: 'DELETE',
+        }).done(function (data, status, xhr){
+            if (status === "success") {
+                console.log(data.responseData);
+                // 현재 페이지 번호 가져오기
+                const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
+                const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
+                const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
+                $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            // 요청 실패 시 실행
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+        });
+    } else {
+        // 취소 버튼을 누른 경우
+        console.log('버튼 실행이 취소 되었습니다.');
+    }
+}
 
-    $.ajax({
-        url: `/api/admin/${id}`,
-        type: 'DELETE',
-    }).done(function (data, status, xhr){
-        if (status === "success") {
-            console.log(data.responseData);
-            // 현재 페이지 번호 가져오기
-            const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
-            const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
-            const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
-            $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        // 요청 실패 시 실행
-        console.error("Request failed: " + textStatus + ", " + errorThrown);
-    });
+function undoDeleteUser(id){
+    if (confirm(`삭제된 ${id}번 계정을 복구 하시겠습니까?`)) {
+        $.ajax({
+            url: `/api/admin/${id}/undo`,
+            type: 'PATCH',
+        }).done(function (data, status, xhr){
+            if (status === "success") {
+                console.log(data.responseData);
+                // 현재 페이지 번호 가져오기
+                const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
+                const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
+                const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
+                $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            // 요청 실패 시 실행
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+        });
+    } else {
+        // 취소 버튼을 누른 경우
+        console.log('버튼 실행이 취소되었습니다.');
+    }
 }

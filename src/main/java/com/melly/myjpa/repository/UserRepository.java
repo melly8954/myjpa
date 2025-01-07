@@ -18,9 +18,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(String email);
 
     // ID로 사용자 찾기
+    // ID 가 없을 경우 null 이므로 Optional 적용이 된다.
     Optional<UserEntity> findById(Long id);
 
     // 로그인 ID로 사용자 찾기
+    // 일반적으로 로그인 ID는 유일하므로 존재하지 않을 경우 예외를 던지거나 null을 반환하는 것이 일반적
     UserEntity findByLoginId(String loginId);
 
     // 이름으로 사용자 찾기

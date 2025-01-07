@@ -34,14 +34,14 @@ public class UserService {
             // 서비스에서 예외를 던지는 방식은 비즈니스 로직에 문제가 생겼을 때 이를 명확하게 클라이언트에 전달하는 좋은 방법
             throw new IllegalArgumentException("이미 사용 중인 로그인 ID 입니다.");
         }
-        if (userRepository.existsByNickname(userDto.getNickname())){
+        if (userRepository.existsByNickname(userDto.getNickname())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임 입니다.");
         }
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
         }
         // 이메일 형식의 정규표현식을 검사해주는 부분
-        if(!userDto.getEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")){
+        if (!userDto.getEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
             throw new IllegalArgumentException("email 형식을 맞추셔야 합니다.");
         }
 
@@ -85,7 +85,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public Boolean login(LoginRequestDto loginRequestDto){
+    public Boolean login(LoginRequestDto loginRequestDto) {
         // 입력된 ID로 사용자 조회
         UserEntity user = userRepository.findByLoginId(loginRequestDto.getLoginId());
 
@@ -94,7 +94,7 @@ public class UserService {
             return false;
         }
         // 비밀번호 확인 (입력된 비밀번호와 저장된 암호화된 비밀번호 비교)
-        if(!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             return false;
         }
         return true;
@@ -111,10 +111,10 @@ public class UserService {
     }
 
     // name 으로 회원정보 찾기
-    public Page<UserEntity> getUserByName(String name,Pageable pageable) {
-        return userRepository.findByName(name,pageable);
+    public Page<UserEntity> getUserByName(String name, Pageable pageable) {
+        return userRepository.findByName(name, pageable);
     }
-    
+
     // 이메일로 로그인ID 찾기
     public String findLoginIdByEmail(String email) {
         // 이메일에 해당하는 사용자를 조회
@@ -143,6 +143,21 @@ public class UserService {
 
         user.softDelete(); // 삭제 플래그 및 날짜 설정
         userRepository.save(user); // 변경 사항 저장
+    }
+
+    // 계정이 삭제된 사용자 복구
+    public void undoDeleteUser(Long id) {
+        Optional<UserEntity> user = this.userRepository.findById(id);
+//        // Optional이 비어있지 않으면
+//        if (user.isPresent()) {
+//            // Optional에서 실제 값을 꺼내고, undoDeleteUser() 메서드를 호출
+//            UserEntity u = user.get();
+//            u.undoDeleteUser();  // 삭제 취소 메서드 호출
+//        }
+        user.ifPresent(u -> {
+            u.undoDeleteUser();
+            userRepository.save(u);
+        });
     }
 
     @Transactional(readOnly = true)

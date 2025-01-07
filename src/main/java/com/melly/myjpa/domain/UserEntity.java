@@ -48,6 +48,11 @@ public class UserEntity {
         this.deleteDate = LocalDateTime.now();
     }
 
+    // 사용자 계정 삭제 취소
+    public void undoDeleteUser(){
+        this.deleteFlag = false;
+    }
+
     @Column(name="delete_date")
     private LocalDateTime deleteDate;
 
