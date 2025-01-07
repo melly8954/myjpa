@@ -1,19 +1,15 @@
-### Mysql Create Database & User 명령어
-```
--- role_tbl 테이블 생성
-CREATE TABLE role_tbl (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    role VARCHAR(255) UNIQUE NOT NULL
-);
+-- myjpa_db.role_tbl definition
 
-INSERT INTO role_tbl (role) VALUES ('ADMIN');
-INSERT INTO role_tbl (role) VALUES ('USER');
-
-```
+CREATE TABLE `role_tbl` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `role` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role` (`role`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-```
--- user_tbl 테이블 생성
+
+-- myjpa_db.user_tbl definition
 
 CREATE TABLE `user_tbl` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -35,12 +31,12 @@ CREATE TABLE `user_tbl` (
   KEY `FK_role` (`role_id`),
   CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-```
 
 
 
 
--- 크롤링 테이블
+-- myjpa_db.bakery_tbl definition
+
 CREATE TABLE `bakery_tbl` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -49,4 +45,4 @@ CREATE TABLE `bakery_tbl` (
   `tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `region` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6534 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
