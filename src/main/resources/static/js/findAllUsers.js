@@ -15,6 +15,7 @@ $.renderUserList = function(data) {
     let html = "";
     // 'users' 배열을 순회하며 HTML 생성
     data.responseData.users.forEach(function(user) {
+        let accountStatus = user.deleteFlag ? "계정이 삭제된 상태입니다." : "계정을 정상적으로 사용 가능합니다.";
         html += `
             <div>
                 <p>ID: ${user.id} <button onclick="deleteUser(${user.id})">계정 삭제</button> </p>
@@ -23,8 +24,8 @@ $.renderUserList = function(data) {
                 <p>닉네임: ${user.nickname}</p>
                 <p>이메일: ${user.email}</p>
                 <p>역할: ${user.role.roleName}</p>
-                <p>계정 상태 : ${user.deleteFlag}</p>
-                <p>계정 삭제 시간 : ${user.deleteDate}</p>
+                <p>계정 상태: ${accountStatus}</p>  <!-- 상태 메시지 추가 -->
+                <p>계정 삭제 시간: ${user.deleteDate}</p>
                 <hr>
             </div>`;
     });
