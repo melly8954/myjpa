@@ -11,14 +11,15 @@
 <div>
     {{#login_user}}
     <p>환영합니다, {{nickname}}님!</p>
+    <a href="/users/change-password">비밀번호 변경하기</a><br>
     <a href="/logout">로그아웃</a>
     {{/login_user}}
 
     {{^isAuthenticated}}
-    <a href="/login">로그인 페이지</a><br>
-    <a href="/sign-up">회원가입 페이지</a><br>
-    <a href="/users/login-id">아이디 찾기 페이지</a><br>
-    <a href="/users/reset-password">비밀번호 찾기 페이지</a>
+    <a href="/login">로그인</a><br>
+    <a href="/sign-up">회원가입</a><br>
+    <a href="/users/login-id">아이디 찾기</a><br>
+    <a href="/users/reset-password">비밀번호 찾기</a>
     {{/isAuthenticated}}
 </div>
 
