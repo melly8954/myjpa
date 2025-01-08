@@ -15,20 +15,23 @@ import java.util.Map;
 public class UserController {
     @GetMapping("/sign-up")
     public String signUpForm() {
-        return "/login_security/signup_form";
+        return "login_security/signup";
     }
 
     @GetMapping("/login")
     public String registerForm() {
-        return "login_security/login_form";
+        return "login_security/login";
     }
-
 
     @GetMapping("/users/login-id")
     public String findLoginIdForm(String email) {
-        return "/login_security/find_loginId";
+        return "login_security/find_loginId";
     }
 
+    @GetMapping("/users/reset-password")
+    public String findPasswordIdForm(String email) {
+        return "login_security/reset_password";
+    }
 
 
 
