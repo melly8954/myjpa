@@ -1,27 +1,20 @@
 package com.melly.myjpa.controller;
 
 import com.melly.myjpa.common.IResponseController;
-import com.melly.myjpa.common.MailRequest;
-import com.melly.myjpa.dto.UserPageResponseDto;
+import com.melly.myjpa.dto.MailRequest;
 import com.melly.myjpa.common.ResponseDto;
 import com.melly.myjpa.domain.UserEntity;
-import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
 import com.melly.myjpa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-
-import java.util.Map;
 
 
 @Slf4j
