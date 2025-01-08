@@ -1,6 +1,8 @@
 package com.melly.myjpa.controller;
 
 import com.melly.myjpa.common.IResponseController;
+import com.melly.myjpa.config.auth.PrincipalDetails;
+import com.melly.myjpa.dto.ChangePasswordRequestDto;
 import com.melly.myjpa.dto.MailRequest;
 import com.melly.myjpa.common.ResponseDto;
 import com.melly.myjpa.domain.UserEntity;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
@@ -45,8 +49,29 @@ public class UserRestController implements IResponseController {
             return makeResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage(), null); // 400 Bad Request
         }catch (Exception e){
             log.error(e.getMessage());
-            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"회원가입 실패 : " + e.getMessage(),null);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
         }
+    }
+
+    // 로그인 ID 중복 체크 API
+    @PostMapping("/users/check-loginId")
+    public ResponseEntity<Boolean> checkLoginId(@RequestBody UserDto userDto) {
+        boolean isLoginIdExist = userService.isLoginIdExist(userDto.getLoginId());
+        return ResponseEntity.ok(isLoginIdExist);
+    }
+
+    // 닉네임 중복 체크 API
+    @PostMapping("/users/check-nickname")
+    public ResponseEntity<Boolean> checkNickname(@RequestBody UserDto userDto) {
+        boolean isNicknameExist = userService.isNicknameExist(userDto.getNickname());
+        return ResponseEntity.ok(isNicknameExist);
+    }
+
+    // 이메일 중복 체크 API
+    @PostMapping("/users/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestBody MailRequest emailRequest) {
+        boolean isEmailExist = userService.isEmailExist(emailRequest.getMail());
+        return ResponseEntity.ok(isEmailExist);
     }
 
 //    // Spring Security 덕분에 구현할 필요가 없음 --> .loginProcessingUrl("/api/auth/login") 이걸로 요청을 가로챔
@@ -94,28 +119,49 @@ public class UserRestController implements IResponseController {
         } catch (Exception e) {
             // 예상치 못한 예외 처리
             log.error("서버 오류", e);
-            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 관리자에게 문의 : " + e.getMessage(),null);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
         }
     }
 
-    // 로그인 ID 중복 체크 API
-    @PostMapping("/users/check-loginId")
-    public ResponseEntity<Boolean> checkLoginId(@RequestBody UserDto userDto) {
-        boolean isLoginIdExist = userService.isLoginIdExist(userDto.getLoginId());
-        return ResponseEntity.ok(isLoginIdExist);
-    }
+    // 로그인 상태에서 비밀번호 변경
+    @PatchMapping("/users/password")
+    public ResponseEntity<ResponseDto> changePassword(@Validated @RequestBody ChangePasswordRequestDto changePasswordRequestDto, BindingResult bindingResult) {
+        try {
+            // 유효성 검사 실패 시
+            if (bindingResult.hasErrors()) {
+                StringBuilder errorMessages = new StringBuilder();
+                bindingResult.getAllErrors().forEach(error -> {
+                    errorMessages.append(error.getDefaultMessage()).append(" / ");
+                });
+                return makeResponseEntity(HttpStatus.BAD_REQUEST,errorMessages.toString(), null);
+            }
 
-    // 닉네임 중복 체크 API
-    @PostMapping("/users/check-nickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestBody UserDto userDto) {
-        boolean isNicknameExist = userService.isNicknameExist(userDto.getNickname());
-        return ResponseEntity.ok(isNicknameExist);
-    }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 인증되지 않은 경우
+            }
 
-    // 이메일 중복 체크 API
-    @PostMapping("/users/check-email")
-    public ResponseEntity<Boolean> checkEmail(@RequestBody MailRequest emailRequest) {
-        boolean isEmailExist = userService.isEmailExist(emailRequest.getMail());
-        return ResponseEntity.ok(isEmailExist);
+            // 로그인한 사용자의 이메일 가져오기
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getEmail(); // 이메일 가져오기
+
+            // 현재 비밀번호와 신규 비밀번호 처리
+            String currentPassword = changePasswordRequestDto.getCurrentPassword();
+            String newPassword = changePasswordRequestDto.getNewPassword();
+
+            // 비밀번호 검증 (예: 현재 비밀번호 확인 및 새 비밀번호 저장)
+            boolean passwordValid = userService.checkCurrentPassword(email, currentPassword);
+            if (!passwordValid) {
+                return makeResponseEntity(HttpStatus.BAD_REQUEST, "현재 비밀번호가 일치하지 않습니다.", null);
+            }
+
+            // 새 비밀번호로 업데이트
+            userService.updatePassword(email, newPassword);
+
+            return makeResponseEntity(HttpStatus.OK,"비밀번호 변경 완료",true);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류: " + ex.getMessage(), null);
+        }
     }
 }

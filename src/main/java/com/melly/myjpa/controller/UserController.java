@@ -24,13 +24,18 @@ public class UserController {
     }
 
     @GetMapping("/users/login-id")
-    public String findLoginIdForm(String email) {
+    public String findLoginIdForm() {
         return "login_security/find_loginId";
     }
 
     @GetMapping("/users/reset-password")
-    public String findPasswordIdForm(String email) {
+    public String findPasswordForm() {
         return "login_security/reset_password";
+    }
+
+    @GetMapping("/users/change-password")
+    public String changePasswordForm() {
+        return "login_security/change_password";
     }
 
 
