@@ -62,4 +62,28 @@ public class UserEntity {
             this.createDate = new Date();  // 현재 시간을 설정
         }
     }
+
+    // 비밀번호를 변경하는 메서드
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    // 객체 복사 메서드
+    public UserEntity copyFields(UserEntity from) {
+        return UserEntity.builder()
+                .id(this.id) // 현재 객체의 ID를 유지
+                .loginId(from.getLoginId())
+                .password(from.getPassword())
+                .name(from.getName())
+                .nickname(from.getNickname())
+                .email(from.getEmail())
+                .role(from.getRole())
+                .provider(from.getProvider())
+                .providerId(from.getProviderId())
+                .createDate(from.getCreateDate())
+                .deleteFlag(from.getDeleteFlag())
+                .deleteDate(from.getDeleteDate())
+                .build();
+    }
+
 }
