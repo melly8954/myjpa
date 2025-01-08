@@ -1,4 +1,4 @@
-package com.melly.myjpa.common;
+package com.melly.myjpa.dto;
 
 import lombok.Getter;
 import lombok.Setter;
