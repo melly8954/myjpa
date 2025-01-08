@@ -44,6 +44,11 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return user.getPassword();
     }
 
+    // 사용자의 이메일을 반환하는 메서드 추가
+    public String getEmail() {
+        return user.getEmail();  // 이메일을 가져오는 메서드
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
