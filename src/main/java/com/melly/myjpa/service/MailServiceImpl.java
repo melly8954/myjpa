@@ -1,5 +1,6 @@
 package com.melly.myjpa.service;
 
+import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -52,8 +53,8 @@ public class MailServiceImpl implements MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(senderEmail);
             helper.setTo(mail);
-            helper.setSubject("이메일 인증번호");
-            String body = "<h2>000에 오신걸 환영합니다!</h2><h3>아래의 인증번호를 입력하세요.</h3><h1>" + verificationCodes.get(mail) + "</h1><h3>감사합니다.</h3>";
+            helper.setSubject("myjpa project : 이메일 인증번호 발송");
+            String body = "<h2>myjpa project 입니다.<br>환영합니다!</h2><h3>아래의 인증번호를 입력하세요.</h3><h1>" + verificationCodes.get(mail) + "</h1><h3>감사합니다.</h3>";
             helper.setText(body, true);
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -80,6 +81,68 @@ public class MailServiceImpl implements MailService {
     public boolean verifyCode(String mail, int code) {
         Integer storedCode = verificationCodes.get(mail);
         return storedCode != null && storedCode == code;
+    }
+
+    // -------------------------------
+    /**
+     * 임시 비밀번호 자동 생성 메서드
+     */
+    private static String generateRandomPassword() {
+        int length = 8;
+        StringBuilder sb = new StringBuilder(length);
+        Random random = new Random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 임시 비밀번호 전송
+     */
+    @Override
+    public void sendTemporaryPasswordMail(String mail, String tempPassword) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(senderEmail);
+            helper.setTo(mail);
+            helper.setSubject("myjpa projcet : 임시 비밀번호 발송");
+            String body = "<h2>myjpa project 입니다.<br>환영합니다!</h2><p>아래의 임시 비밀번호를 사용하세요.</p><h1>" + tempPassword + "</h1><h3>반드시 비밀번호를 재설정하세요.</h3>";
+            helper.setText(body, true);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("임시 비밀번호 전송 오류", e);
+        }
+    }
+
+    /**
+     * 임시 비밀번호 생성 및 DB 업데이트
+     */
+    @Override
+    public String createTemporaryPassword(String mail) {
+        String tempPassword = generateRandomPassword();
+        UserEntity user = userRepository.findByEmail(mail);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for mail: " + mail);
+        }
+        user.changePassword(passwordEncoder.encode(tempPassword));
+        userRepository.save(user);
+        return tempPassword;
+    }
+
+    /**
+     * 임시 비밀번호 검증
+     */
+    @Override
+    public boolean verifyTemporaryPassword(String mail, String tempPassword) {
+        UserEntity user = userRepository.findByEmail(mail);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for mail: " + mail);
+        }
+        return passwordEncoder.matches(tempPassword, user.getPassword());
     }
 
 }

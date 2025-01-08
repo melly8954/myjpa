@@ -11,4 +11,11 @@ public interface MailService {
 
     CompletableFuture<Integer> sendMail(String mail);
 
+    //
+    String createTemporaryPassword(String email);
+
+    boolean verifyTemporaryPassword(String email, String tempPassword);
+
+    void sendTemporaryPasswordMail(String email, String tempPassword);
+
 }
