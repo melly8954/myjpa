@@ -2,7 +2,7 @@ $(document).ready(function() {
     $.loadUserList(); // 바뀐 함수 이름으로 호출
 
     // 엔터 키로 버튼 클릭 효과 추가
-    $("#find-name").keypress(function(event) {
+    $("#findName").keypress(function(event) {
         if (event.which === 13) {  // Enter key code
             event.preventDefault();  // 기본 엔터키 동작 방지
             $.showUser();  // 조회 버튼 클릭과 같은 동작 수행
@@ -35,15 +35,15 @@ $.renderUserList = function(data) {
                 <hr>
             </div>`;
     });
-    $("#show-users").html(html);
+    $("#showUsers").html(html);
 }
 
 
 $.loadUserList = function () {
     const page = 1;
 
-    $("#search-page-div").hide();  // 검색 결과 페이지네이션 숨기기
-    $("#page-div").show();  // 기존 페이지네이션 보이기
+    $("#searchPageDiv").hide();  // 검색 결과 페이지네이션 숨기기
+    $("#pageDiv").show();  // 기존 페이지네이션 보이기
 
     $.ajax({
         url: `/api/admin/users?page=${page}`,
@@ -57,14 +57,14 @@ $.loadUserList = function () {
         // 요청 성공 시 실행
         if (status === "success") {
             $.renderUserList(data);  // 사용자 목록 렌더링
-            $.makePageUI(data.responseData.totalElements, page, "#page-div");   // 페이지네이션 UI 생성
+            $.makePageUI(data.responseData.totalElements, page, "#pageDiv");   // 페이지네이션 UI 생성
         } else {
-            $("#show-users").html(`<p>오류: ${data.message}</p>`);
+            $("#showUsers").html(`<p>오류: ${data.message}</p>`);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // 요청 실패 시 실행
         console.error("Request failed: " + textStatus + ", " + errorThrown);
-        $("#show-users").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
+        $("#showUsers").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
     });
 }
 
@@ -115,7 +115,7 @@ function getEndPage(startPage, paramTotal) {
 $.searchBoardList = function(page, pageDivId, isSearch) {
     const rowsOnePage = 5;  // 페이지 당 항목 수 고정
     let url = isSearch
-        ? `/api/admin/${$("#find-name").val()}?page=${page}&size=${rowsOnePage}`  // 검색 시 URL 처리
+        ? `/api/admin/${$("#findName").val()}?page=${page}&size=${rowsOnePage}`  // 검색 시 URL 처리
         : `/api/admin/users?page=${page}&size=${rowsOnePage}`;  // 기본 페이지 처리
 
     $.ajax({
@@ -128,7 +128,7 @@ $.searchBoardList = function(page, pageDivId, isSearch) {
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);
-        $("#show-users").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
+        $("#showUsers").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
     });
 }
 
@@ -146,7 +146,7 @@ $.validateName = function(name) {
 };
 
 $.showUser = function () {
-    const name = $("#find-name").val()
+    const name = $("#findName").val()
     const page = 1;  // 페이지 1부터 시작
     const rowsOnePage = 5;  // 페이지 당 항목 수 고정
 
@@ -155,8 +155,8 @@ $.showUser = function () {
         return; // 유효성 검사 실패 시 종료
     }
 
-    $("#page-div").hide();  // 기존 페이지네이션 숨기기
-    $("#search-page-div").show();  // 검색 결과 페이지네이션 보기
+    $("#pageDiv").hide();  // 기존 페이지네이션 숨기기
+    $("#searchPageDiv").show();  // 검색 결과 페이지네이션 보기
 
     $.ajax({
         url: `/api/admin/${name}?page=${page}&size=${rowsOnePage}`,
@@ -165,19 +165,19 @@ $.showUser = function () {
         if (status === "success") {
             $.renderUserList(data);  // 사용자 목록 렌더링
             // 페이지네이션 UI 생성, 검색 페이지네이션을 위한 isSearch 매개변수 추가
-            $.makePageUI(data.responseData.totalElements, page, "#search-page-div", true);
+            $.makePageUI(data.responseData.totalElements, page, "#searchPageDiv", true);
         } else {
-            $("#show-users").html(`<p>오류: ${data.message}</p>`);
+            $("#showUsers").html(`<p>오류: ${data.message}</p>`);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // 요청 실패 시 실행
         console.error("Request failed: " + textStatus + ", " + errorThrown);
         if (jqXHR.status === 404) {
-            $("#show-users").html(`<p>검색하신 ${name} 라는 이름의 회원은 존재하지 않습니다.</p>`);
-            $.makePageUI(0, 1,"#search-page-div");  // 404일 때 페이지네이션을 0으로 처리
+            $("#showUsers").html(`<p>검색하신 ${name} 라는 이름의 회원은 존재하지 않습니다.</p>`);
+            $.makePageUI(0, 1,"#searchPageDiv");  // 404일 때 페이지네이션을 0으로 처리
         } else {
-            $("#show-users").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
-            $.makePageUI(0, 1,"#search-page-div");
+            $("#showUsers").html("<p>회원 정보를 불러오는 중 오류가 발생했습니다.</p>");
+            $.makePageUI(0, 1,"#searchPageDiv");
         }
     });
 }
@@ -192,9 +192,9 @@ function deleteUser(id) {
             if (status === "success") {
                 console.log(data.responseData);
                 // 현재 페이지 번호 가져오기
-                const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
+                const pageDivId = $("#searchPageDiv").is(":visible") ? "#searchPageDiv" : "#pageDiv"; // 현재 보이는 페이지 영역 구분
                 const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
-                const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
+                const isSearch = $("#searchPageDiv").is(":visible"); // 검색 중인지 여부 확인
                 $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -216,9 +216,9 @@ function undoDeleteUser(id){
             if (status === "success") {
                 console.log(data.responseData);
                 // 현재 페이지 번호 가져오기
-                const pageDivId = $("#search-page-div").is(":visible") ? "#search-page-div" : "#page-div"; // 현재 보이는 페이지 영역 구분
+                const pageDivId = $("#searchPageDiv").is(":visible") ? "#searchPageDiv" : "#pageDiv"; // 현재 보이는 페이지 영역 구분
                 const currentPage = parseInt($(pageDivId + " .active").text()) || 1; // 현재 페이지 번호 가져오기, 기본은 1페이지
-                const isSearch = $("#search-page-div").is(":visible"); // 검색 중인지 여부 확인
+                const isSearch = $("#searchPageDiv").is(":visible"); // 검색 중인지 여부 확인
                 $.searchBoardList(currentPage, pageDivId, isSearch); // 삭제 후 현재 페이지로 목록 갱신
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {

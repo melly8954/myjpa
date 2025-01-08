@@ -9,15 +9,15 @@
 <script src="/js/findAllUsers.js"></script>
 <body>
     <div class="select-container" >
-        <label for="find-name">검색할 회원의 이름</label><br>
-        <input type="text" id="find-name" name="find-name"><br>
+        <label for="findName">검색할 회원의 이름</label><br>
+        <input type="text" id="findName" name="findName"><br>
         <input type="submit" value="조회" onclick="$.showUser()" >
 
         <input type="button" value="모든 유저 목록 보기" onclick="$.loadUserList()" >
     </div>
-    <div id="show-users">
+    <div id="showUsers">
     </div>
-    <div id="page-div"></div>
-    <div id="search-page-div"></div> <!-- 검색 결과 페이지네이션 -->
+    <div id="pageDiv"></div>
+    <div id="searchPageDiv"></div> <!-- 검색 결과 페이지네이션 -->
 </body>
 </html>
