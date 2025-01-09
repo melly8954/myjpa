@@ -47,9 +47,18 @@ function deleteUser(id) {
             type: 'DELETE',
         }).done(function (data, status, xhr){
             if (status === "success") {
-                // 성공 후 페이지 갱신
-                alert("계정이 탈퇴되었습니다.");
-                location.href="/";
+                // 성공 후 세션 무효화 및 로그아웃 처리
+                $.ajax({
+                    url: "/logout",  // Spring Security 로그아웃 URL
+                    type: "POST",  // 로그아웃 요청
+                    success: function() {
+                        alert("계정이 탈퇴되었습니다.");
+                        location.href = "/";  // 홈 화면으로 리다이렉트
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Logout failed: " + textStatus + ", " + errorThrown);
+                    }
+                });
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.error("Request failed: " + textStatus + ", " + errorThrown);
