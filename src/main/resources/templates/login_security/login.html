@@ -26,38 +26,4 @@
         <a href="/oauth2/authorization/google">구글 로그인</a>
     </div>
 </body>
-<!--<script>-->
-<!--    $("#submit").on("click", function (event) {-->
-<!--        event.preventDefault(); // 기본 폼 전송 막기-->
-
-<!--        const formData = {-->
-<!--            loginId: $("#loginId").val(),-->
-<!--            password: $("#password").val(),-->
-<!--        };-->
-
-<!--        $.ajax({-->
-<!--            url: "/api/auth/login",-->
-<!--            method: "POST",-->
-<!--            contentType: "application/json",-->
-<!--            data: JSON.stringify(formData)-->
-<!--        }).done(function (data) {-->
-<!--            // 요청 성공 시 실행-->
-<!--            if (data.message === "로그인 성공") {-->
-<!--                alert("로그인 완료");-->
-<!--                window.location.href = "/";-->
-<!--            } else {-->
-<!--                alert("로그인 실패: " + data.message);-->
-<!--            }-->
-<!--        }).fail(function (jqXHR, textStatus, errorThrown) {-->
-<!--            // 요청 실패 시 실행-->
-<!--            console.error("Request failed: " + textStatus + ", " + errorThrown);-->
-<!--            alert("로그인 중 오류가 발생했습니다.");-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<script>
-    $.sign_up = function () {
-        window.location.href="/sign-up"
-    }
-</script>
 </html>

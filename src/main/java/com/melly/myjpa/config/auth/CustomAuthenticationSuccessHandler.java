@@ -18,13 +18,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @ResponseBody
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        // 인증된 사용자가 ADMIN 권한을 가지고 있으면 admin-page 로 리다이렉트
+        // 서버에서 리디렉션을 하지 않고, JSON 응답으로 성공 메시지 전달
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+
+        // 사용자 권한 확인 후 필요한 정보를 클라이언트에게 전달
         if (authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
-            response.sendRedirect("/admin");  // 리다이렉트 처리
+            response.getWriter().write("{\"redirectUrl\": \"/admin\"}");
         } else {
-            // ADMIN 권한이 없는 경우
-            response.sendRedirect("/");  // 리다이렉트 처리
+            response.getWriter().write("{\"redirectUrl\": \"/\"}");
         }
     }
 

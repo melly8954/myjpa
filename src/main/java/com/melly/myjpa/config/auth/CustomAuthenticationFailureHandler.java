@@ -1,11 +1,14 @@
 package com.melly.myjpa.config.auth;
 
-import jakarta.servlet.ServletException;
+import com.melly.myjpa.config.exception.AccountDeletedException;
+import com.melly.myjpa.config.exception.CustomBadCredentialsException;
+import com.melly.myjpa.config.exception.CustomDisabledException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +20,16 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        // 인증 실패 메시지 생성
-        String errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
+        String errorMessage = "";
 
         if (exception instanceof BadCredentialsException) {
-            errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
-        } else if (exception instanceof DisabledException) {
-            errorMessage = "이 계정은 비활성화 상태입니다.";
+            errorMessage = exception.getMessage();
+        } else if (exception instanceof CustomDisabledException) {
+            errorMessage = exception.getMessage();
+        } else if (exception instanceof AccountDeletedException) {
+            errorMessage = exception.getMessage();
+        } else if (exception instanceof UsernameNotFoundException) {
+            errorMessage = "존재하지 않는 계정입니다.";
         }
 
         // JSON 응답으로 실패 메시지 전송

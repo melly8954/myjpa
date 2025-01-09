@@ -1,5 +1,8 @@
 package com.melly.myjpa.config.auth;
 
+import com.melly.myjpa.config.exception.AccountDeletedException;
+import com.melly.myjpa.config.exception.CustomDisabledException;
+import com.melly.myjpa.domain.StatusType;
 import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +29,8 @@ public class PrincipalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByLoginId(loginId);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with loginId: " + loginId);
-        } else {
-            return new PrincipalDetails(user);
+            throw new UsernameNotFoundException("존재하지 않는 계정입니다.");
         }
+        return new PrincipalDetails(user);  // 계정 상태 검증은 CustomAuthenticationProvider에서 수행
     }
-
 }
