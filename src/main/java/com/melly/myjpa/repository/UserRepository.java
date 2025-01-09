@@ -31,8 +31,4 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     // 이메일로 사용자 찾기
     UserEntity findByEmail(String email);
 
-    // 활성 사용자만 조회 (삭제되지 않은 사용자)
-    @Query("SELECT u FROM UserEntity u WHERE u.deleteFlag = false")
-    List<UserEntity> findAllActiveUsers();
-
 }

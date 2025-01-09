@@ -1,6 +1,7 @@
 package com.melly.myjpa.service;
 
 import com.melly.myjpa.domain.RoleEntity;
+import com.melly.myjpa.domain.StatusType;
 import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.dto.LoginRequestDto;
 import com.melly.myjpa.dto.UserDto;
@@ -11,13 +12,11 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -64,7 +63,7 @@ public class UserService {
                 .nickname(userDto.getNickname())
                 .email(userDto.getEmail())
                 .role(userRole)  // 기본 역할 할당
-                .deleteFlag(false)
+                .statusType(StatusType.ACTIVE)
                 .build();
 
         return userRepository.save(user);  // 저장 후 반환
@@ -155,33 +154,43 @@ public class UserService {
         }
     }
 
-    // ID 로 사용자 계정 삭제
+    // 사용자가 자신의 계정을 탈퇴 (삭제 처리)
     @Transactional
     public void softDeleteUser(Long id) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        user.softDelete(); // 삭제 플래그 및 날짜 설정
+        // 사용자가 자신을 삭제할 때, 계정을 삭제된 상태로 변경
+        user.changeStatus(StatusType.DELETED); // 상태를 DELETED로 변경
+        user.changeDeleteDate(LocalDateTime.now()); // 삭제 날짜를 현재 시간으로 설정
         userRepository.save(user); // 변경 사항 저장
     }
 
-    // 계정이 삭제된 사용자 복구
-    public void undoDeleteUser(Long id) {
-        Optional<UserEntity> user = this.userRepository.findById(id);
-//        // Optional이 비어있지 않으면
-//        if (user.isPresent()) {
-//            // Optional에서 실제 값을 꺼내고, undoDeleteUser() 메서드를 호출
-//            UserEntity u = user.get();
-//            u.undoDeleteUser();  // 삭제 취소 메서드 호출
-//        }
-        user.ifPresent(u -> {
-            u.undoDeleteUser();
-            userRepository.save(u);
-        });
+    // 관리자가 계정을 비활성화
+    @Transactional
+    public void softDisableUser(Long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        // 계정을 비활성화 상태로 변경
+        user.changeStatus(StatusType.INACTIVE); // 상태를 INACTIVE로 변경
+        user.changeDeleteDate(LocalDateTime.now()); // 비활성화 날짜를 현재 시간으로 설정
+        userRepository.save(user); // 변경 사항 저장
     }
 
-    @Transactional(readOnly = true)
-    public List<UserEntity> getActiveUsers() {
-        return userRepository.findAllActiveUsers();
+    // 사용자 계정 복구
+    @Transactional
+    public void undoUser(Long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        // 계정이 비활성화(인 inactive) 또는 삭제(deleted) 상태인 경우 복구
+        if (user.getStatusType() == StatusType.INACTIVE || user.getStatusType() == StatusType.DELETED) {
+            user.changeStatus(StatusType.ACTIVE); // 상태를 ACTIVE로 변경
+            user.changeDeleteDate(null); // 비활성화 날짜 및 삭제 날짜 초기화
+            userRepository.save(user); // 변경 사항 저장
+        } else {
+            throw new IllegalStateException("User is already active and cannot be undone.");
+        }
     }
 }

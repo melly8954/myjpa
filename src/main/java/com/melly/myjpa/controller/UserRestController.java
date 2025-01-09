@@ -164,4 +164,19 @@ public class UserRestController implements IResponseController {
             return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류: " + ex.getMessage(), null);
         }
     }
+
+    // 사용자 페이지에서 스스로 계정을 탈퇴 (삭제 처리)
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
+        try {
+            if(id == null || id <= 0) {
+                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야 한다.",null);
+            }
+            this.userService.softDeleteUser(id);
+            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정이 삭제되었습니다.",true);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류: " + e.getMessage(),null);
+        }
+    }
 }

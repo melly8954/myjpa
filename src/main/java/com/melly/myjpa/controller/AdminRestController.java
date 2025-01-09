@@ -70,31 +70,33 @@ public class AdminRestController implements IResponseController {
         }
     }
 
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
-        try{
-            if(id == null || id<= 0) {
-                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야한다.",null);
+    // 관리자 페이지에서 사용자가 비활성화된 계정을 확인하고 비활성화 처리
+    @PatchMapping("/admin/{id}/disable")
+    public ResponseEntity<ResponseDto> disableUser(@PathVariable Long id) {
+        try {
+            if(id == null || id <= 0) {
+                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야 한다.",null);
             }
-            this.userService.softDeleteUser(id);
-            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정 삭제 처리 완료",true);
-        }catch (Exception e) {
+            this.userService.softDisableUser(id);
+            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정이 비활성화되었습니다.",true);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류: " + e.getMessage(),null);
         }
     }
 
+    // 관리자 페이지에서 사용자가 탈퇴된 계정을 복구
     @PatchMapping("/admin/{id}/undo")
     public ResponseEntity<ResponseDto> undoUser(@PathVariable Long id) {
-        try{
-            if(id == null || id<= 0) {
-                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야한다.",null);
+        try {
+            if(id == null || id <= 0) {
+                return makeResponseEntity(HttpStatus.BAD_REQUEST,"회원 ID > 0 을 만족해야 한다.",null);
             }
-            this.userService.undoDeleteUser(id);
-            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정 삭제를 취소함 ",true);
-        }catch (Exception e) {
+            this.userService.undoUser(id);
+            return makeResponseEntity(HttpStatus.OK,"해당 유저의 계정 삭제가 취소되었습니다.",true);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류 : " + e.getMessage(),null);
+            return makeResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류: " + e.getMessage(),null);
         }
     }
 }

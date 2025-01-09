@@ -2,6 +2,7 @@ package com.melly.myjpa.config.oauth;
 
 import com.melly.myjpa.config.auth.PrincipalDetails;
 import com.melly.myjpa.domain.RoleEntity;
+import com.melly.myjpa.domain.StatusType;
 import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.repository.RoleRepository;
 import com.melly.myjpa.repository.UserRepository;
@@ -44,6 +45,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         // 비밀번호 설정 없이 OAuth 로그인만 사용
         String password = "N/A"; // 또는 null로 설정 가능
         String role = "USER";
+        StatusType statusType = StatusType.ACTIVE;
 
         // RoleEntity 객체를 먼저 조회
         Optional<RoleEntity> roleEntity = roleRepository.findByRole(role);  // "USER"에 해당하는 RoleEntity를 조회
@@ -60,6 +62,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .role(roleEntity.get())  // 이미 조회된 RoleEntity를 할당
                     .provider(provider)
                     .providerId(providerId)
+                    .statusType(statusType)
                     .build();
             userRepository.save(user);
         }

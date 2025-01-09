@@ -1,6 +1,7 @@
 package com.melly.myjpa.common;
 
 import com.melly.myjpa.domain.RoleEntity;
+import com.melly.myjpa.domain.StatusType;
 import com.melly.myjpa.domain.UserEntity;
 import com.melly.myjpa.repository.RoleRepository;
 import com.melly.myjpa.repository.UserRepository;
@@ -40,6 +41,7 @@ public class AdminInitializer implements CommandLineRunner {
                     .nickname("administrator")
                     .email("superemail@naver.com")
                     .role(adminRole)
+                    .statusType(StatusType.ACTIVE)
                     .build();
             userRepository.save(admin);  // 관리자 계정 추가
         }

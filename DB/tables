@@ -22,7 +22,7 @@ CREATE TABLE `user_tbl` (
   `provider` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `provider_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `delete_flag` tinyint NOT NULL DEFAULT '0' COMMENT '회원 삭제 여부 (false: 활성, true: 삭제)',
+  `status_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ACTIVE' COMMENT '계정 상태 (ACTIVE, INACTIVE, DELETED)',
   `delete_date` timestamp NULL DEFAULT NULL COMMENT '회원 삭제 날짜',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nickname` (`nickname`),
@@ -31,6 +31,7 @@ CREATE TABLE `user_tbl` (
   KEY `FK_role` (`role_id`),
   CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
 

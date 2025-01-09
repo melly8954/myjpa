@@ -7,11 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Home 화면</title>
 </head>
+<script src="/js/jquery-3.7.1.min.js"></script>
 <body>
 <div>
     {{#login_user}}
     <p>환영합니다, {{nickname}}님!</p>
     <a href="/users/change-password">비밀번호 변경하기</a><br>
+    <button onclick="deleteUser({{id}})">계정 탈퇴</button>
     <a href="/logout">로그아웃</a>
     {{/login_user}}
 
@@ -36,4 +38,25 @@
 <!--    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다-->
 <!--    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다.-->
 <!--</script>-->
+<script>
+// 계정 탈퇴 (비활성화)
+function deleteUser(id) {
+    if (confirm("정말 계정을 탈퇴하시겠습니까?")) {
+        $.ajax({
+            url: `/api/users/${id}`,  // 사용자 탈퇴 요청 URL
+            type: 'DELETE',
+        }).done(function (data, status, xhr){
+            if (status === "success") {
+                // 성공 후 페이지 갱신
+                alert("계정이 탈퇴되었습니다.");
+                location.href="/";
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+        });
+    } else {
+        console.log('계정 탈퇴가 취소되었습니다.');
+    }
+}
+</script>
 </html>
