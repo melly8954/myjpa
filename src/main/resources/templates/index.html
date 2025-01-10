@@ -24,48 +24,92 @@
     <a href="/users/reset-password">비밀번호 찾기</a>
     {{/isAuthenticated}}
 </div>
-
 <div id="map" style="width:100%;height:500px;"></div>
 </body>
 <script type="text/javascript" src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=22411cc1db9b89640b44cafcbbdaad92"></script>
 <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
-            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울
-            level: 7 // 지도의 확대 레벨
+            center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+            level: 9 // 지도의 확대 레벨
         };
 
-    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다.
-</script>
-<script>
-// 계정 탈퇴 (비활성화)
-function deleteUser(id) {
-    if (confirm("정말 계정을 탈퇴하시겠습니까?")) {
-        $.ajax({
-            url: `/api/users/${id}`,  // 사용자 탈퇴 요청 URL
-            type: 'DELETE',
-        }).done(function (data, status, xhr){
-            if (status === "success") {
-                // 성공 후 세션 무효화 및 로그아웃 처리
-                $.ajax({
-                    url: "/logout",  // Spring Security 로그아웃 URL
-                    type: "POST",  // 로그아웃 요청
-                    success: function() {
-                        alert("계정이 탈퇴되었습니다.");
-                        location.href = "/";  // 홈 화면으로 리다이렉트
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error("Logout failed: " + textStatus + ", " + errorThrown);
-                    }
+    var map = new kakao.maps.Map(mapContainer, mapOption),
+        customOverlay = new kakao.maps.CustomOverlay({}),
+        infowindow = new kakao.maps.InfoWindow({ removable: true });
+
+    // GeoJSON 파일을 읽고 파싱하여 Kakao 지도에 폴리곤으로 표시
+    fetch('http://localhost:8089/json/seoul_gson.geojson')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            data.features.forEach(feature => {
+                // 각 구의 좌표를 얻어오기
+                const coordinates = feature.geometry.coordinates[0].map(coord => {
+                    return new kakao.maps.LatLng(coord[1], coord[0]); // GeoJSON은 [lng, lat] 순이라서 순서를 맞춰줌
                 });
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.error("Request failed: " + textStatus + ", " + errorThrown);
-        });
-    } else {
-        console.log('계정 탈퇴가 취소되었습니다.');
+
+                // 폴리곤 옵션 설정
+                const polygonOptions = {
+                    path: coordinates, // 폴리곤 경로
+                    strokeWeight: 2,    // 선 두께
+                    strokeColor: '#0066ff', // 선 색상 (파란색)
+                    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다.
+                    strokeStyle: 'solid', // 선의 스타일입니다.
+                    fillColor: '#66ccff',   // 채우기 색상 (연한 파란색)
+                    fillOpacity: 0.5     // 채우기 투명도
+                };
+
+                // 폴리곤 객체 생성
+                const polygon = new kakao.maps.Polygon(polygonOptions);
+
+                // 지도에 폴리곤 추가
+                polygon.setMap(map);  // map은 Kakao 지도 객체
+
+                // 폴리곤 클릭 시 해당 구로 확대하는 기능
+                kakao.maps.event.addListener(polygon, 'click', function () {
+                    // 폴리곤의 좌표로 LatLngBounds 객체 생성
+                    var bounds = new kakao.maps.LatLngBounds();
+                    coordinates.forEach(coord => {
+                        bounds.extend(coord);
+                    });
+
+                    // 해당 구로 확대
+                    map.setBounds(bounds);
+                });
+            });
+        })
+        .catch(error => console.error('GeoJSON 로드 실패:', error));
+</script>
+
+<script>
+    // 계정 탈퇴 (비활성화)
+    function deleteUser(id) {
+        if (confirm("정말 계정을 탈퇴하시겠습니까?")) {
+            $.ajax({
+                url: `/api/users/${id}`,  // 사용자 탈퇴 요청 URL
+                type: 'DELETE',
+            }).done(function (data, status, xhr){
+                if (status === "success") {
+                    // 성공 후 세션 무효화 및 로그아웃 처리
+                    $.ajax({
+                        url: "/logout",  // Spring Security 로그아웃 URL
+                        type: "POST",  // 로그아웃 요청
+                        success: function() {
+                            alert("계정이 탈퇴되었습니다.");
+                            location.href = "/";  // 홈 화면으로 리다이렉트
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error("Logout failed: " + textStatus + ", " + errorThrown);
+                        }
+                    });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: " + textStatus + ", " + errorThrown);
+            });
+        } else {
+            console.log('계정 탈퇴가 취소되었습니다.');
+        }
     }
-}
 </script>
 </html>
