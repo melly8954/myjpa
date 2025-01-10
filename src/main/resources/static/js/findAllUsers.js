@@ -10,6 +10,10 @@ $(document).ready(function() {
     });
 });
 
+function moveHome(){
+    window.location.href="/admin";
+}
+
 $.renderUserList = function(data) {
     let html = "";
     // 'users' 배열을 순회하며 HTML 생성

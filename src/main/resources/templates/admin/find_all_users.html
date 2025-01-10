@@ -8,16 +8,17 @@
 <script src="/js/jquery-3.7.1.min.js"></script>
 <script src="/js/findAllUsers.js"></script>
 <body>
-    <div class="select-container" >
-        <label for="findName">검색할 회원의 이름</label><br>
-        <input type="text" id="findName" name="findName"><br>
-        <input type="submit" value="조회" onclick="$.showUser()" >
+<button onclick="moveHome()">Home</button>
+<div class="select-container">
+    <label for="findName">검색할 회원의 이름</label><br>
+    <input type="text" id="findName" name="findName"><br>
+    <input type="submit" value="조회" onclick="$.showUser()">
 
-        <input type="button" value="모든 유저 목록 보기" onclick="$.loadUserList()" >
-    </div>
-    <div id="showUsers">
-    </div>
-    <div id="pageDiv"></div>
-    <div id="searchPageDiv"></div> <!-- 검색 결과 페이지네이션 -->
+    <input type="button" value="모든 유저 목록 보기" onclick="$.loadUserList()">
+</div>
+<div id="showUsers">
+</div>
+<div id="pageDiv"></div>
+<div id="searchPageDiv"></div> <!-- 검색 결과 페이지네이션 -->
 </body>
 </html>
