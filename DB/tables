@@ -13,24 +13,25 @@ CREATE TABLE `role_tbl` (
 
 CREATE TABLE `user_tbl` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `loginId` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `loginId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `nickname` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nickname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `role_id` bigint DEFAULT NULL,
-  `provider` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `provider_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `provider` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `provider_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ACTIVE' COMMENT '계정 상태 (ACTIVE, INACTIVE, DELETED)',
+  `status_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ACTIVE' COMMENT '계정 상태 (ACTIVE, INACTIVE, DELETED)',
   `delete_date` timestamp NULL DEFAULT NULL COMMENT '회원 삭제 날짜',
+  `disable_date` timestamp NULL DEFAULT NULL COMMENT '계정 비활성화 날짜',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nickname` (`nickname`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `loginId` (`loginId`),
   KEY `FK_role` (`role_id`),
   CONSTRAINT `FK_role` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 
