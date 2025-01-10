@@ -6,7 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
@@ -21,6 +24,13 @@ public class UserController {
     @GetMapping("/login")
     public String registerForm() {
         return "login_security/login";
+    }
+
+    // OAuth2 로그인 실패 시 redirect 되는 view , CustomAuthenticationFailureHandler 가 관리
+    @GetMapping("/login-fail")
+    public String loginFail(@RequestParam("error") String errorMessage, Model model) {
+        model.addAttribute("error", errorMessage);
+        return "login_security/login_fail";  // Mustache template file
     }
 
     @GetMapping("/users/login-id")
