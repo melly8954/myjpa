@@ -21,7 +21,7 @@ $.renderUserList = function (data) {
             <select id="statusDropdown_${user.id}" onchange="updateUserStatus(${user.id})">
                 <option value="ACTIVE" ${user.statusType === 'ACTIVE' ? 'selected' : ''}>활성</option>
                 <option value="INACTIVE" ${user.statusType === 'INACTIVE' ? 'selected' : ''}>비활성</option>
-                <option value="DELETED" ${user.statusType === 'DELETED' ? 'selected' : ''}>삭제됨</option>
+                <option value="DELETED" ${user.statusType === 'DELETED' ? 'selected' : ''}>탈퇴</option>
             </select>
         `;
 
@@ -34,7 +34,8 @@ $.renderUserList = function (data) {
                 <p>이메일: ${user.email}</p>
                 <p>역할: ${user.role.roleName}</p>
                 <p>계정 상태: ${accountStatusDropdown}</p>
-                <p>계정 비활성화 시간: ${user.deleteDate}</p>
+                <p>계정 비활성화 시간: ${user.disableDate}</p>
+                <p>계정 탈퇴처리 시간: ${user.deleteDate}</p>
                 <hr>
             </div>`;
     });

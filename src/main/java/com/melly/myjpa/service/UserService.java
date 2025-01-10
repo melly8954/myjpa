@@ -154,7 +154,7 @@ public class UserService {
         }
     }
 
-    // 사용자가 자신의 계정을 탈퇴 (삭제 처리)
+    // 사용자 or 관리자가 자신의 계정을 탈퇴 (삭제 처리)
     @Transactional
     public void softDeleteUser(Long id) {
         UserEntity user = userRepository.findById(id)
@@ -174,7 +174,7 @@ public class UserService {
 
         // 계정을 비활성화 상태로 변경
         user.changeStatus(StatusType.INACTIVE); // 상태를 INACTIVE로 변경
-        user.changeDeleteDate(LocalDateTime.now()); // 비활성화 날짜를 현재 시간으로 설정
+        user.changeDisableDate(LocalDateTime.now()); // 비활성화 날짜를 현재 시간으로 설정
         userRepository.save(user); // 변경 사항 저장
     }
 
@@ -188,6 +188,7 @@ public class UserService {
         if (user.getStatusType() == StatusType.INACTIVE || user.getStatusType() == StatusType.DELETED) {
             user.changeStatus(StatusType.ACTIVE); // 상태를 ACTIVE로 변경
             user.changeDeleteDate(null); // 비활성화 날짜 및 삭제 날짜 초기화
+            user.changeDisableDate(null); // 비활성화 날짜 및 삭제 날짜 초기화
             userRepository.save(user); // 변경 사항 저장
         } else {
             throw new IllegalStateException("User is already active and cannot be undone.");

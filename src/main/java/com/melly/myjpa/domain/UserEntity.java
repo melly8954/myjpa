@@ -52,21 +52,32 @@ public class UserEntity {
         }
     }
 
-    @Column(name="delete_date")
-    private LocalDateTime deleteDate;
-
     @Column(name="status_type")
     @Enumerated(EnumType.STRING)
     private StatusType statusType;  // 새로운 상태 타입
+
+    @Column(name="delete_date")
+    private LocalDateTime deleteDate;
+
+    @Column(name="disable_date")
+    private LocalDateTime disableDate;
 
     // Status 변경
     public void changeStatus(StatusType newStatus) {
         this.statusType = newStatus;
     }
 
-    // 상태 변경일 저장 메서드
+    // 탈퇴 시간 저장
     public void changeDeleteDate(LocalDateTime newDeleteDate) {
-        this.deleteDate = LocalDateTime.now();
+        if (newDeleteDate != null) {
+            this.deleteDate = newDeleteDate;
+        }
     }
 
+    // 비활성화 시간 저장
+    public void changeDisableDate(LocalDateTime newDisableDate) {
+        if (newDisableDate != null) {
+            this.disableDate = newDisableDate;
+        }
+    }
 }
