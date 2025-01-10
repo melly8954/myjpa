@@ -1,6 +1,8 @@
 package com.melly.myjpa.config.oauth;
 
 import com.melly.myjpa.config.auth.PrincipalDetails;
+import com.melly.myjpa.config.exception.AccountDeletedException;
+import com.melly.myjpa.config.exception.CustomDisabledException;
 import com.melly.myjpa.domain.RoleEntity;
 import com.melly.myjpa.domain.StatusType;
 import com.melly.myjpa.domain.UserEntity;
@@ -65,6 +67,13 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .statusType(statusType)
                     .build();
             userRepository.save(user);
+        }
+        if (StatusType.DELETED.equals(user.getStatusType())) {
+            throw new AccountDeletedException("탈퇴된 계정입니다. 관리자에게 문의하십시오");
+        }
+
+        if (StatusType.INACTIVE.equals(user.getStatusType())) {
+            throw new CustomDisabledException("이 계정은 비활성화 상태입니다. 관리자에게 문의하십시오");
         }
         return new PrincipalDetails(user,oAuth2User.getAttributes());
     }
