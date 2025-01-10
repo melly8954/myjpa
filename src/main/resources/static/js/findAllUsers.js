@@ -14,36 +14,32 @@ function moveHome(){
     window.location.href="/admin";
 }
 
-$.renderUserList = function(data) {
+$.renderUserList = function (data) {
     let html = "";
-    // 'users' 배열을 순회하며 HTML 생성
-    data.responseData.users.forEach(function(user) {
-        let accountStatus = user.statusType === 'INACTIVE'
-            ? "계정이 비활성화된 상태입니다."
-            : user.statusType === 'DELETED'
-                ? "계정이 삭제된 상태입니다."
-                : "계정을 정상적으로 사용 가능합니다.";
-
-        // 계정 복구 버튼을 INACTIVE 또는 DELETED 상태일 때만 보이게 처리
-        let restoreButton = (user.statusType === 'INACTIVE' || user.statusType === 'DELETED')
-            ? `<button id="undo" onclick="undoUser(${user.id})">계정 복구</button>`
-            : '';
+    data.responseData.users.forEach(function (user) {
+        let accountStatusDropdown = `
+            <select id="statusDropdown_${user.id}" onchange="updateUserStatus(${user.id})">
+                <option value="ACTIVE" ${user.statusType === 'ACTIVE' ? 'selected' : ''}>활성</option>
+                <option value="INACTIVE" ${user.statusType === 'INACTIVE' ? 'selected' : ''}>비활성</option>
+                <option value="DELETED" ${user.statusType === 'DELETED' ? 'selected' : ''}>삭제됨</option>
+            </select>
+        `;
 
         html += `
             <div>
-                <p>ID: ${user.id} <button onclick="deactivateUser(${user.id})">계정 비활성화</button> </p>
+                <p>ID: ${user.id}</p>
                 <p>로그인 아이디: ${user.loginId}</p>
                 <p>이름: ${user.name}</p>
                 <p>닉네임: ${user.nickname}</p>
                 <p>이메일: ${user.email}</p>
                 <p>역할: ${user.role.roleName}</p>
-                <p>계정 상태: ${accountStatus} ${restoreButton}</p> 
+                <p>계정 상태: ${accountStatusDropdown}</p>
                 <p>계정 비활성화 시간: ${user.deleteDate}</p>
                 <hr>
             </div>`;
     });
     $("#showUsers").html(html);
-}
+};
 
 $.loadUserList = function () {
     const page = 1;
@@ -176,44 +172,47 @@ $.showUser = function () {
     });
 }
 
-// 계정 복구 함수
-function undoUser(id) {
-    if (confirm(`${id}번 계정을 복구하시겠습니까?`)) {
-        $.ajax({
-            url: `/api/admin/${id}/undo`,  // 공통 URL로 처리
-            type: 'PATCH',
-        }).done(function (data, status, xhr){
-            if (status === "success") {
-                const pageDivId = $("#searchPageDiv").is(":visible") ? "#searchPageDiv" : "#pageDiv";
-                const currentPage = parseInt($(pageDivId + " .active").text()) || 1;
-                const isSearch = $("#searchPageDiv").is(":visible");
-                $.searchBoardList(currentPage, pageDivId, isSearch);
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.error("Request failed: " + textStatus + ", " + errorThrown);
-        });
-    } else {
-        console.log('버튼 실행이 취소되었습니다.');
-    }
-}
+function updateUserStatus(userId) {
+    const selectedStatus = $(`#statusDropdown_${userId}`).val(); // 선택된 상태 값
 
-// 계정 비활성화
-function deactivateUser(id) {
-    if (confirm(`${id}번 계정을 비활성화 하시겠습니까?`)) {
+    let apiUrl = "";
+    let httpMethod = "";
+    let confirmMessage = "";
+
+    if (selectedStatus === "INACTIVE") {
+        apiUrl = `/api/admin/${userId}/disable`;
+        httpMethod = "PATCH";
+        confirmMessage = "계정을 비활성화하시겠습니까?";
+    } else if (selectedStatus === "DELETED") {
+        apiUrl = `/api/users/${userId}`;
+        httpMethod = "DELETE";
+        confirmMessage = "계정을 삭제하시겠습니까?";
+    } else if (selectedStatus === "ACTIVE") {
+        apiUrl = `/api/admin/${userId}/undo`;
+        httpMethod = "PATCH";
+        confirmMessage = "계정을 활성화하시겠습니까?";
+    }
+
+    if (confirm(confirmMessage)) {
         $.ajax({
-            url: `/api/admin/${id}/disable`,
-            type: 'PATCH',
-        }).done(function (data, status, xhr){
-            if (status === "success") {
+            url: apiUrl,
+            type: httpMethod,
+        })
+            .done(function () {
+                alert("상태가 성공적으로 변경되었습니다.");
+                // 목록 갱신
                 const pageDivId = $("#searchPageDiv").is(":visible") ? "#searchPageDiv" : "#pageDiv";
                 const currentPage = parseInt($(pageDivId + " .active").text()) || 1;
                 const isSearch = $("#searchPageDiv").is(":visible");
                 $.searchBoardList(currentPage, pageDivId, isSearch);
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.error("Request failed: " + textStatus + ", " + errorThrown);
-        });
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("요청 실패: " + textStatus + ", " + errorThrown);
+                alert("상태 변경에 실패했습니다.");
+            });
     } else {
-        console.log('버튼 실행이 취소되었습니다.');
+        // 변경 취소 시 드롭다운 값을 원래 상태로 복구
+        const originalStatus = $(`#statusDropdown_${userId} option[selected]`).val();
+        $(`#statusDropdown_${userId}`).val(originalStatus);
     }
 }
