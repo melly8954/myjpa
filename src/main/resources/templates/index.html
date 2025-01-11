@@ -6,6 +6,18 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Home 화면</title>
+    <style>
+        .area {
+            position: absolute;
+            background: #fff;
+            border: 1px solid #888;
+            border-radius: 3px;
+            font-size: 12px;
+            top: -5px;
+            left: 15px;
+            padding:2px;
+        }
+    </style>
 </head>
 <script src="/js/jquery-3.7.1.min.js"></script>
 <body>
@@ -34,52 +46,146 @@
             level: 9 // 지도의 확대 레벨
         };
 
-    var map = new kakao.maps.Map(mapContainer, mapOption),
-        customOverlay = new kakao.maps.CustomOverlay({}),
-        infowindow = new kakao.maps.InfoWindow({ removable: true });
+    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // GeoJSON 파일을 읽고 파싱하여 Kakao 지도에 폴리곤으로 표시
-    fetch('http://localhost:8089/json/seoul_gson.geojson')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            data.features.forEach(feature => {
-                // 각 구의 좌표를 얻어오기
-                const coordinates = feature.geometry.coordinates[0].map(coord => {
-                    return new kakao.maps.LatLng(coord[1], coord[0]); // GeoJSON은 [lng, lat] 순이라서 순서를 맞춰줌
+    // 전역 커스텀 오버레이 변수
+    var customOverlay = new kakao.maps.CustomOverlay({
+        map: null, // 초기에는 지도에 추가하지 않음
+        content: '',
+        position: null,
+    });
+
+    var polygons = []; // 폴리곤 저장 배열
+    var currentPolygon = null; // 현재 오버레이가 표시된 폴리곤
+
+    // 확대 여부를 추적하는 변수
+    var isZoomed = false;
+
+    // 행정구역 구분
+    $.getJSON("http://localhost:8089/json/seoul_gson.geojson", function (geojson) {
+        var data = geojson.features;
+        var coordinates = []; // 좌표 저장할 배열
+        var name = ''; // 행정 구 이름
+
+        $.each(data, function (index, val) {
+            coordinates = val.geometry.coordinates;
+            name = val.properties.SIG_KOR_NM;
+
+            displayArea(coordinates, name);
+        });
+    });
+
+    // 행정구역 폴리곤 표시
+    function displayArea(coordinates, name) {
+        var path = []; // 폴리곤 경로
+        var points = []; // 중심 좌표 계산용
+
+        $.each(coordinates[0], function (index, coordinate) {
+            var point = new Object();
+            point.x = coordinate[1];
+            point.y = coordinate[0];
+            points.push(point);
+            path.push(new kakao.maps.LatLng(coordinate[1], coordinate[0])); // GeoJSON은 [lng, lat] 순이라서 순서를 맞춰줌
+        });
+
+        // 다각형 생성
+        var polygon = new kakao.maps.Polygon({
+            map: map,
+            path: path,
+            strokeWeight: 4,
+            strokeColor: '#f03a3a',
+            strokeOpacity: 0.8,
+            fillColor: '#fff',
+            fillOpacity: 0.7,
+        });
+
+        polygons.push(polygon);
+
+        // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경
+        kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
+            // 이전 폴리곤이 있다면 원래대로 돌려놓기
+            if (currentPolygon && currentPolygon !== polygon) {
+                currentPolygon.setOptions({ fillColor: "#fff" });
+            }
+
+            // 현재 폴리곤 색 변경
+            polygon.setOptions({ fillColor: '#09f' });
+
+            // 오버레이 내용과 위치 업데이트
+            customOverlay.setContent('<div class="area">' + name + '</div>');
+            customOverlay.setPosition(mouseEvent.latLng);
+            customOverlay.setMap(map); // 지도에 표시
+
+            // 현재 오버레이가 표시된 폴리곤으로 설정
+            currentPolygon = polygon;
+        });
+
+        // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경
+        kakao.maps.event.addListener(polygon, 'mouseout', function () {
+            // 폴리곤 색을 원래 색으로 돌려놓기
+            polygon.setOptions({ fillColor: "#fff" });
+
+            // 커스텀 오버레이 제거
+            customOverlay.setMap(null);
+
+            // 현재 폴리곤 상태 초기화
+            currentPolygon = null;
+        });
+
+
+        // 다각형에 click 이벤트를 등록하고 이벤트가 발생하면 해당 지역 확대합니다.
+        kakao.maps.event.addListener(polygon,'click',function (){
+            if (!isZoomed) {  // 아직 확대되지 않았다면
+                // 현재 지도 레벨에서 3레벨 확대한 레벨
+                var level = map.getLevel() - 2;
+
+                // 지도에서 클릭된 폴리곤의 중앙 위치를 기준으로 확대
+                map.setLevel(level, {
+                    anchor: centroid(points),
+                    animate: {
+                        duration: 350  // 확대 애니메이션 시간
+                    }
                 });
 
-                // 폴리곤 옵션 설정
-                const polygonOptions = {
-                    path: coordinates, // 폴리곤 경로
-                    strokeWeight: 2,    // 선 두께
-                    strokeColor: '#0066ff', // 선 색상 (파란색)
-                    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다.
-                    strokeStyle: 'solid', // 선의 스타일입니다.
-                    fillColor: '#66ccff',   // 채우기 색상 (연한 파란색)
-                    fillOpacity: 0.5     // 채우기 투명도
-                };
+                // 확대된 상태로 설정
+                isZoomed = true;
 
-                // 폴리곤 객체 생성
-                const polygon = new kakao.maps.Polygon(polygonOptions);
+                // 클릭된 폴리곤 제외하고 나머지 폴리곤 제거
+                removeOtherPolygons(polygon);
+            }
+        });
+    }
 
-                // 지도에 폴리곤 추가
-                polygon.setMap(map);  // map은 Kakao 지도 객체
+    function centroid(points){
+        var i, j, len, p1, p2, f, area = 0, x = 0, y = 0;
 
-                // 폴리곤 클릭 시 해당 구로 확대하는 기능
-                kakao.maps.event.addListener(polygon, 'click', function () {
-                    // 폴리곤의 좌표로 LatLngBounds 객체 생성
-                    var bounds = new kakao.maps.LatLngBounds();
-                    coordinates.forEach(coord => {
-                        bounds.extend(coord);
-                    });
+        for(i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+            p1 = points[i];
+            p2 = points[j];
 
-                    // 해당 구로 확대
-                    map.setBounds(bounds);
-                });
-            });
-        })
-        .catch(error => console.error('GeoJSON 로드 실패:', error));
+            f = p1.y * p2.x - p2.y * p1.x;
+            x += (p1.x + p2.x) * f;
+            y += (p1.y + p2.y) * f;
+            area += f * 3;
+        }
+
+        // NaN 방지: 계산이 잘못되었을 경우 0,0으로 초기화
+        if (area === 0) {
+            return new kakao.maps.LatLng(0, 0); // 기본 값 (0,0)
+        }
+
+        return new kakao.maps.LatLng(x / area, y / area);
+    }
+
+    // 다른 폴리곤 제거 함수
+    function removeOtherPolygons(clickedPolygon) {
+        polygons.forEach(function (polygon) {
+            if (polygon !== clickedPolygon) {
+                polygon.setMap(null); // 지도에서 제거
+            }
+        });
+        polygons = [clickedPolygon]; // 클릭된 폴리곤만 남기기
+    }
 </script>
 
 <script>
